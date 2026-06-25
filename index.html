@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abschiedsparty Gameshow</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jsvectormap/dist/css/jsvectormap.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsvectormap/dist/maps/world.js"></script>
+
+    <style>
+        :root {
+            --accent: #d62828; 
+            --accent-hover: #bc2020;
+            --gold: #f5a623;
+            --text-dark: #1d3557;
+            --item-h: 110px;
+            --item-w: 650px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Montserrat', sans-serif; }
+        
+        /* NỀN MẶC ĐỊNH (CHẾ ĐỘ CÀI ĐẶT) */
+        body { 
+            background: #f4f7f6; color: var(--text-dark); 
+            overflow: hidden; height: 100vh; 
+            transition: background 1s ease, color 1s ease;
+        }
+        
+        /* CHẾ ĐỘ PARTY (CHẾ ĐỘ CHƠI GAME) */
+        body.party-mode {
+            background: linear-gradient(-45deg, #0b132b, #1c2541, #2c5364, #0f2027);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #ffffff;
+        }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px;}
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+
+        /* ================= SETUP SCREEN ================= */
+        #setup-screen {
+            display: grid; grid-template-columns: 1fr 1fr 1fr;
+            height: 100vh; padding: 30px; gap: 20px;
+            background: #fff; position: relative; z-index: 1000; overflow-y: auto;
+        }
+        .setup-panel { display: flex; flex-direction: column; gap: 10px; }
+        .setup-panel h3 { font-size: 16px; color: #333; border-bottom: 2px solid var(--accent); padding-bottom: 5px; }
+        textarea {
+            flex-grow: 1; min-height: 150px; padding: 15px; border: 2px solid #ddd;
+            border-radius: 12px; font-size: 14px; resize: none; outline: none; background: #fafafa;
+        }
+        textarea:focus, input[type="text"]:focus { border-color: var(--accent); }
+        input[type="text"] { width: 100%; padding: 10px; margin-bottom: 5px; border: 1px solid #ccc; border-radius: 6px; }
+
+        .zodiac-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .drop-zone { aspect-ratio: 1; border: 2px dashed #bbb; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; position: relative; overflow: hidden; background: #f9f9f9; }
+        .drop-zone img { position: absolute; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 0; }
+        .drop-zone.has-image img { opacity: 0.8; }
+        .drop-zone span { position: relative; z-index: 2; font-weight: 800; font-size: 12px; background: rgba(255,255,255,0.8); padding: 2px 5px; border-radius: 5px;}
+        
+        .btn-start {
+            grid-column: span 3; padding: 20px; background: var(--accent); color: white;
+            border: none; border-radius: 15px; font-size: 22px; font-weight: 800;
+            cursor: pointer; transition: 0.3s; margin-top: 10px; box-shadow: 0 10px 20px rgba(214,40,40,0.2);
+        }
+        .btn-start:hover { transform: translateY(-3px); background: var(--accent-hover); }
+
+        /* ================= GAME SCREEN (SANG TRỌNG) ================= */
+        #game-screen { display: none; height: 100vh; grid-template-columns: auto 450px; padding: 40px; gap: 40px; justify-content: center; }
+        
+        .glass-panel { 
+            background: rgba(255, 255, 255, 0.08); 
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255,255,255,0.15); 
+            border-radius: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.4); 
+            display: flex; flex-direction: column; position: relative; 
+        }
+
+        .highlighter-box { 
+            position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); 
+            border: 4px solid var(--gold); border-radius: 20px; 
+            background: rgba(245, 166, 35, 0.08); 
+            box-shadow: 0 0 30px rgba(245, 166, 35, 0.2);
+            pointer-events: none; z-index: 5; 
+        }
+
+        .reel-container { position: relative; overflow: hidden; flex-grow: 1; }
+        .reel-list { list-style: none; position: absolute; will-change: transform; margin:0; padding:0; width: 100%; top:0; left:0;}
+
+        #q-panel { width: 800px; }
+        #q-highlighter { width: 90%; height: 250px; }
+        .question-item { height: 250px; display: flex; align-items: center; justify-content: center; padding: 0 60px; text-align: center; font-size: 34px; font-weight: 700; color: #fff; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+
+        .list-header { padding: 25px; text-align: center; font-weight: 900; font-size: 26px; border-bottom: 1px solid rgba(255,255,255,0.1); color: var(--gold); letter-spacing: 2px;}
+        #p-highlighter { width: 90%; height: var(--item-h); }
+        .player-item { height: var(--item-h); display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 800; color: #eee; text-transform: uppercase; text-shadow: 0 5px 10px rgba(0,0,0,0.5);}
+
+        .center-controls { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 100; }
+        .btn-spin-master { 
+            padding: 25px 80px; border-radius: 60px; border: none; 
+            background: var(--gold); color: #000; font-size: 30px; font-weight: 900; 
+            cursor: pointer; transition: 0.3s; box-shadow: 0 15px 35px rgba(245, 166, 35, 0.4); text-transform: uppercase; 
+        }
+        .btn-spin-master:hover:not(:disabled) { transform: scale(1.05); background: #ffb732; }
+        .btn-spin-master:disabled { opacity: 0.5; cursor: not-allowed; transform: scale(0.95); }
+
+        /* ================= OVERLAY KẾT QUẢ (DARK THEME) ================= */
+        #result-overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(11, 19, 43, 0.95); backdrop-filter: blur(15px); z-index: 2000; 
+            flex-direction: column; align-items: center; justify-content: center; 
+            padding: 20px; text-align: center; overflow: hidden; 
+        }
+        
+        .res-header-group { margin-top: 20px; margin-bottom: 20px; }
+        .res-player { font-size: 40px; color: var(--gold); margin-bottom: 10px; font-weight: 900; text-transform: uppercase; text-shadow: 0 0 20px rgba(245, 166, 35, 0.3);}
+        .res-question { font-size: 42px; font-weight: 700; color: #fff; max-width: 1200px; padding: 0 20px; text-shadow: 0 5px 10px rgba(0,0,0,0.5);}
+        
+        #content-wrapper { flex-grow: 1; width: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; max-height: calc(100vh - 250px); }
+
+        .res-options { display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; max-width: 1100px; }
+        .res-opt-btn { 
+            padding: 25px 40px; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.2); 
+            border-radius: 20px; font-size: 28px; font-weight: 700; color: #fff; cursor: pointer; transition: 0.2s; 
+        }
+        .res-opt-btn:hover { border-color: var(--gold); background: rgba(245,166,35,0.1); }
+        .res-opt-btn.selected { background: var(--gold); color: #000; border-color: var(--gold); transform: scale(1.05); }
+
+        /* CAROUSEL VUỐT (KÉO) CON GIÁP */
+        .zodiac-carousel {
+            display: none; overflow-x: auto; gap: 30px; 
+            padding: 20px 50vw; width: 100vw; scroll-behavior: smooth; 
+            scroll-snap-type: x mandatory; height: 100%; align-items: center;
+        }
+        .zodiac-carousel::-webkit-scrollbar { display: none; }
+        .zodiac-card {
+            scroll-snap-align: center; flex-shrink: 0; width: 350px; height: 500px; 
+            background: #000; border-radius: 25px; overflow: hidden; 
+            position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.6); transition: 0.3s;
+            cursor: pointer; border: 4px solid transparent;
+        }
+        .zodiac-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: 0.3s; }
+        
+        .zodiac-carousel.has-selection .zodiac-card:not(.active) { opacity: 0.3; transform: scale(0.9); filter: grayscale(100%); }
+        .zodiac-card.active { transform: scale(1.1); border-color: var(--gold); box-shadow: 0 0 50px rgba(245, 166, 35, 0.6); z-index: 10; }
+        .zodiac-card.active .zodiac-img { opacity: 1; }
+        
+        .zodiac-info { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(0,0,0,0.95)); color: white; padding: 40px 20px 20px 20px; text-align: center;}
+        .zodiac-name { font-size: 35px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;}
+        .zodiac-years { font-size: 20px; color: #bbb; margin-top: 5px; font-weight: 600; } 
+
+        /* BẢN ĐỒ INTERACTIVE MAP */
+        #map-container { width: 90vw; max-width: 1200px; height: 50vh; border-radius: 20px; overflow: hidden; border: 3px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.05); display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        
+        /* NÚT CHỐT CỐ ĐỊNH Ở DƯỚI */
+        .action-bottom { height: 100px; display: flex; align-items: center; justify-content: center; width: 100%; z-index: 2001; padding-bottom: 20px; }
+        .btn-done { padding: 20px 50px; border-radius: 50px; background: #fff; color: #000; border: none; cursor: pointer; font-size: 24px; font-weight: 900; transition: 0.3s; text-transform: uppercase; box-shadow: 0 10px 30px rgba(0,0,0,0.4);}
+        .btn-done:hover:not(:disabled) { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <div id="setup-screen">
+        <div class="setup-panel">
+            <h3>1. Người tham gia (Tên : Số vé)</h3>
+            <textarea id="in-players" class="auto-save">Daniel : 4
+Anh : 2
+Tiến : 2
+Gia Quỳnh : 2
+Gia : 2
+Trung : 2
+Khánh : 2
+Như Quỳnh : 2
+Yến : 2
+Vy : 2
+Trang : 2
+Thy : 2</textarea>
+            
+            <h3 style="margin-top: 10px;">Ngôn ngữ Giao diện</h3>
+            <input type="text" id="ui-title-q" class="auto-save" value="VÒNG QUAY CÂU HỎI">
+            <input type="text" id="ui-title-p" class="auto-save" value="DANH SÁCH LỚP">
+            <input type="text" id="ui-btn-spin" class="auto-save" value="🎲 BẮT ĐẦU QUAY">
+            <input type="text" id="ui-btn-next" class="auto-save" value="HOÀN THÀNH - LƯỢT TIẾP THEO">
+            <input type="text" id="ui-btn-confirm" class="auto-save" value="CHỐT ĐÁP ÁN NÀY!">
+        </div>
+        
+        <div class="setup-panel">
+            <h3>2. Câu hỏi Chung</h3>
+            <textarea id="in-questions" class="auto-save">Wenn du eine Superkraft hättest, welche wäre das? | Unsterblich, aber arm! ( Bất tử nhưng nghèo) | Extrem wohlhabend, aber ständig erkältet. ( Giàu vô cùng nhưng luôn cảm) | Sehr ist intelligent hübsch, aber es geht thường etwas schief. ( Thông minh, xinh đẹp vô cùng  nhưng thường chuyện xấu xảy ra) | normal sein ( là người bình thường)
+Welches Land würdest du gerne besuchen, aber niemals darin leben wollen? | [MAP]
+Welches Land würden Sie am liebsten mindestens einmal in Ihrem Leben besuchen? | [MAP]
+Was ist dir am peinlichsten? | Pflicht | Wahrheit
+Wenn du eine Superkraft hättest, welche wäre das? | Fliegen können | Gedanken lesen können | Alle Sprachen der Welt sprechen können | Eine andere Superkraft
+Wen magst du am Goethe-Institut am liebsten? | Kommilitonen | Lehrer | Praktikanten | Mich selbst
+Sie besitzt die doppelte Staatsbürgerschaft, erstens die vietnamesische oder die deutsche. Welche Staatsbürgerschaft ist deine zweite? | [MAP]
+Deine erste Liebe, eine heimliche Schwärmerei aus längst vergangenen Zeiten, als du deine Gefühle nie gestanden hast. | Pflicht | Wahrheit
+Du singst ein Lied ( mindestens 10 Sätze ).  | Pflicht | Wahrheit
+</textarea>
+
+            <h3 style="margin-top: 10px;">3. Câu hỏi riêng cho thầy DANIEL</h3>
+            <textarea id="in-daniel-qs" class="auto-save">Welchem ​​Tierkreiszeichen gehörst du an? | [ZODIAC]
+In welchem Land möchten Sie als Nächstes arbeiten? | [MAP]
+Welche Person erinnerst du dich am besten, seit dem Goethe-Institut? | ^ _ ^
+Welches Sternzeichen sollte dein Lebenspartner haben? Warum? | 🦁 Löwe | 🧚 Jungfrau | ⚖️ Waage | 🦂 Skorpion | 🏹 Schütze | 🐐 Steinbock | 🌊 Wassermann | 🐟 Fische | 🐏 Widder | 🐂 Stier | 👯 Zwillinge | 🦀 Krebs</textarea>
+        </div>
+
+        <div class="setup-panel">
+            <h3>4. Hình ảnh 12 Con giáp (Tự lưu)</h3>
+            <div class="zodiac-grid" id="zodiac-grid"></div>
+        </div>
+
+        <button class="btn-start" onclick="initGame()">🔥 VÀO CHƠI THÔI (CHUYỂN SANG PARTY MODE) 🔥</button>
+    </div>
+
+    <div id="game-screen">
+        <div class="glass-panel" id="q-panel">
+            <h2 id="lbl-title-q" style="position: absolute; top: 30px; width: 100%; text-align: center; color: rgba(255,255,255,0.6); font-size: 20px; letter-spacing: 3px;"></h2>
+            <div class="reel-container" id="q-scroll-box">
+                <div class="highlighter-box" id="q-highlighter"></div>
+                <ul class="reel-list q-reel" id="q-reel"></ul>
+            </div>
+        </div>
+
+        <div class="glass-panel">
+            <div id="lbl-title-p" class="list-header"></div>
+            <div class="reel-container" id="p-scroll-box">
+                <div class="highlighter-box" id="p-highlighter"></div>
+                <ul class="reel-list p-reel" id="p-reel"></ul>
+            </div>
+        </div>
+
+        <div class="center-controls">
+            <button class="btn-spin-master" id="btn-spin" onclick="spinBoth()"></button>
+        </div>
+    </div>
+
+    <div id="result-overlay">
+        <div class="res-header-group">
+            <div class="res-player" id="res-name">TÊN NGƯỜI CHƠI</div>
+            <div class="res-question" id="res-q">Nội dung câu hỏi?</div>
+        </div>
+        
+        <div id="content-wrapper">
+            <div class="res-options" id="res-opts"></div>
+            <div id="map-container"></div>
+            <div class="zodiac-carousel" id="z-carousel"></div>
+        </div>
+
+        <div class="action-bottom">
+            <button class="btn-done" id="btn-confirm-special" style="background: var(--gold); color: #000; display: none;" onclick="confirmSpecial()"></button>
+            <button class="btn-done" id="btn-next-turn" style="display: none;" onclick="closeOverlay()"></button>
+        </div>
+    </div>
+
+    <script>
+        // XÓA BỘ NHỚ LƯU TỰ ĐỘNG CŨ ĐỂ KHÔNG BỊ GHI ĐÈ LỖI TREO
+        localStorage.removeItem('in-questions');
+        localStorage.removeItem('in-daniel-qs');
+        localStorage.removeItem('in-players');
+
+        // === HỆ THỐNG DỮ LIỆU ===
+        const ZODIAC_FALLBACK = "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=500&q=80";
+        const zodiacNames = [
+            {n:"Tý", y:"1972, 1984, 1996, 2008"}, 
+            {n:"Sửu", y:"1973, 1985, 1997, 2009"}, 
+            {n:"Dần", y:"1974, 1986, 1998, 2010"},
+            {n:"Mão", y:"1975, 1987, 1999, 2011"}, 
+            {n:"Thìn", y:"1976, 1988, 2000, 2012"}, 
+            {n:"Tỵ", y:"1977, 1989, 2001, 2013"},
+            {n:"Ngọ", y:"1978, 1990, 2002, 2014"}, 
+            {n:"Mùi", y:"1979, 1991, 2003, 2015"}, 
+            {n:"Thân", y:"1980, 1992, 2004, 2016"},
+            {n:"Dậu", y:"1981, 1993, 2005, 2017"}, 
+            {n:"Tuất", y:"1982, 1994, 2006, 2018"}, 
+            {n:"Hợi", y:"1983, 1995, 2007, 2019"}
+        ];
+        
+        let zodiacImages = new Array(12).fill(null);
+        let playerPool = [], uniquePlayers = [], normalQs = [], danielQs = [];
+        let isSpinning = false, finalPlayer = "", finalQuestionObj = null;
+        let worldMapInstance = null;
+
+        function loadSettings() {
+            document.querySelectorAll('.auto-save').forEach(el => {
+                if(localStorage.getItem(el.id)) el.value = localStorage.getItem(el.id);
+                el.addEventListener('input', () => localStorage.setItem(el.id, el.value));
+            });
+            const savedImages = localStorage.getItem('zodiacImagesStorage');
+            if(savedImages) { try { zodiacImages = JSON.parse(savedImages); } catch(e) {} }
+        }
+
+        function initSetup() {
+            loadSettings();
+            const grid = document.getElementById('zodiac-grid');
+            zodiacNames.forEach((z, i) => {
+                const box = document.createElement('div');
+                box.className = 'drop-zone';
+                let imgSrc = zodiacImages[i] || "";
+                box.innerHTML = `<input type="file" id="file-${i}" accept="image/*" style="display:none" onchange="handleImg(event, ${i})"><img id="prev-${i}" src="${imgSrc}"><span>${z.n}</span>`;
+                if(imgSrc) box.classList.add('has-image');
+                box.onclick = () => document.getElementById(`file-${i}`).click();
+                box.ondragover = (e) => { e.preventDefault(); box.style.borderColor = "red"; };
+                box.ondragleave = () => box.style.borderColor = "#bbb";
+                box.ondrop = (e) => { e.preventDefault(); box.style.borderColor = "#bbb"; if(e.dataTransfer.files[0]) processImageFile(e.dataTransfer.files[0], i); };
+                grid.appendChild(box);
+            });
+        }
+        
+        function handleImg(e, i) { if(e.target.files[0]) processImageFile(e.target.files[0], i); }
+        function processImageFile(file, index) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas'); const ctx = canvas.getContext('2d');
+                    let w = img.width, h = img.height; const maxSize = 600;
+                    if(w > maxSize || h > maxSize) { if(w > h) { h = (h/w)*maxSize; w = maxSize; } else { w = (w/h)*maxSize; h = maxSize; } }
+                    canvas.width = w; canvas.height = h; ctx.drawImage(img, 0, 0, w, h);
+                    const base64Data = canvas.toDataURL('image/jpeg', 0.8);
+                    zodiacImages[index] = base64Data;
+                    localStorage.setItem('zodiacImagesStorage', JSON.stringify(zodiacImages));
+                    const prevImg = document.getElementById(`prev-${index}`);
+                    prevImg.src = base64Data; prevImg.parentElement.classList.add('has-image');
+                }
+                img.src = event.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+        initSetup();
+
+        function parseQuestions(text) {
+            return text.split('\n').filter(t => t.trim()).map(line => {
+                const parts = line.split('|'); 
+                const opts = parts.length > 1 ? parts.slice(1).map(o => o.trim()) : ["Câu trả lời mở"];
+                let type = "TEXT";
+                if(opts[0] === "[MAP]") type = "MAP";
+                if(opts[0] === "[ZODIAC]") type = "ZODIAC";
+                return { q: parts[0].trim(), opts: opts, type: type };
+            });
+        }
+
+        // === VÀO GAME (CHỐNG LỖI 100%) ===
+        function initGame() {
+            document.body.classList.add('party-mode');
+
+            document.getElementById('lbl-title-q').innerText = document.getElementById('ui-title-q').value;
+            document.getElementById('lbl-title-p').innerText = document.getElementById('ui-title-p').value;
+            document.getElementById('btn-spin').innerText = document.getElementById('ui-btn-spin').value;
+            document.getElementById('btn-next-turn').innerText = document.getElementById('ui-btn-next').value;
+            document.getElementById('btn-confirm-special').innerText = document.getElementById('ui-btn-confirm').value;
+
+            playerPool = []; uniquePlayers = [];
+            document.getElementById('in-players').value.split('\n').filter(t => t.trim()).forEach(line => {
+                let parts = line.split(':'); let name = parts[0].trim(); let count = parts.length > 1 ? parseInt(parts[1].trim()) : 1;
+                uniquePlayers.push(name); for(let i=0; i<count; i++) playerPool.push(name);
+            });
+
+            normalQs = parseQuestions(document.getElementById('in-questions').value);
+            danielQs = parseQuestions(document.getElementById('in-daniel-qs').value);
+
+            if (normalQs.length === 0 && danielQs.length === 0) {
+                alert("⚠️ Hệ thống phát hiện thiếu câu hỏi. Xin hãy F5 tải lại trang để nạp lại dữ liệu gốc nhé.");
+                document.body.classList.remove('party-mode'); 
+                return; 
+            }
+
+            // Thuật toán xáo trộn an toàn tuyệt đối
+            let danielName = uniquePlayers.find(p => p.toLowerCase().includes('daniel'));
+            let validSequence = [];
+            
+            for(let attempt = 0; attempt < 3000; attempt++) {
+                let temp = [...playerPool];
+                for (let i = temp.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [temp[i], temp[j]] = [temp[j], temp[i]];
+                }
+                let valid = true;
+                for (let i = 0; i < temp.length - 1; i++) {
+                    if (temp[i] === temp[i+1]) { valid = false; break; }
+                }
+                if (danielName && valid) {
+                    if (temp[0] === danielName) valid = false;
+                    if (temp[temp.length - 1] !== danielName) valid = false;
+                }
+                if (valid) { validSequence = temp; break; }
+            }
+            
+            if (validSequence.length > 0) {
+                playerPool = validSequence;
+            } else {
+                playerPool.sort(() => Math.random() - 0.5); 
+            }
+
+            document.getElementById('setup-screen').style.display = 'none';
+            document.getElementById('game-screen').style.display = 'grid';
+
+            const allQsCombined = [...normalQs, ...danielQs];
+            
+            renderStaticReel('p-reel', uniquePlayers.length ? uniquePlayers : ["Người chơi"], 110);
+            renderStaticReel('q-reel', allQsCombined.length ? allQsCombined.map(q => q.q) : ["Câu hỏi"], 250); 
+        }
+
+        function getOffset(containerId, itemSize) { return (document.getElementById(containerId).clientHeight - itemSize) / 2; }
+        
+        function renderStaticReel(id, itemsArr, itemSize) {
+            const reel = document.getElementById(id); reel.innerHTML = '';
+            if(!itemsArr || itemsArr.length === 0) itemsArr = [""]; 
+            itemsArr.forEach(txt => { let li = document.createElement('li'); li.className = id === 'p-reel' ? 'player-item' : 'question-item'; li.innerText = txt; reel.appendChild(li); });
+            reel.style.transition = 'none';
+            reel.style.transform = `translateY(${getOffset(id.replace('reel', 'scroll-box'), itemSize)}px)`;
+        }
+
+        // === LOGIC QUAY ===
+        function spinBoth() {
+            if(playerPool.length === 0) { alert("🎉 Đã hết người chơi! Buổi tiệc thành công rực rỡ!"); return; }
+            isSpinning = true; document.getElementById('btn-spin').disabled = true;
+
+            finalPlayer = playerPool.shift();
+            const uiPlayerIndex = uniquePlayers.indexOf(finalPlayer);
+
+            const allQsCombined = [...normalQs, ...danielQs]; 
+            
+            let poolToUseForTarget = finalPlayer.toLowerCase().includes('daniel') ? danielQs : normalQs;
+            if(!poolToUseForTarget || poolToUseForTarget.length === 0) {
+                poolToUseForTarget = normalQs.length > 0 ? normalQs : danielQs;
+            }
+            
+            finalQuestionObj = poolToUseForTarget[Math.floor(Math.random() * poolToUseForTarget.length)];
+            let finalQIndexInCombined = allQsCombined.findIndex(q => q.q === finalQuestionObj.q);
+            if(finalQIndexInCombined < 0) finalQIndexInCombined = 0;
+
+            runSpinAnim('p-reel', 'p-scroll-box', uniquePlayers, uiPlayerIndex >= 0 ? uiPlayerIndex : 0, 110);
+            runSpinAnim('q-reel', 'q-scroll-box', allQsCombined.map(q=>q.q), finalQIndexInCombined, 250);
+
+            setTimeout(() => {
+                confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 }, zIndex: 3000 });
+                renderStaticReel('p-reel', uniquePlayers, 110);
+                document.getElementById('p-reel').style.transform = `translateY(${getOffset('p-scroll-box', 110) - (uiPlayerIndex * 110)}px)`;
+                
+                renderStaticReel('q-reel', allQsCombined.map(q=>q.q), 250);
+                document.getElementById('q-reel').style.transform = `translateY(${getOffset('q-scroll-box', 250) - (finalQIndexInCombined * 250)}px)`;
+
+                setTimeout(openOverlay, 1500);
+            }, 10000); 
+        }
+
+        function runSpinAnim(reelId, boxId, itemArr, targetIndex, itemSize) {
+            if(!itemArr || itemArr.length === 0) itemArr = [""];
+            const reel = document.getElementById(reelId); reel.innerHTML = '';
+            for(let i=0; i<15; i++) { itemArr.forEach(txt => { let li = document.createElement('li'); li.className = reelId === 'p-reel' ? 'player-item' : 'question-item'; li.innerText = txt; reel.appendChild(li); }); }
+            const offset = getOffset(boxId, itemSize);
+            reel.style.transition = 'none';
+            reel.style.transform = `translateY(${offset}px)`;
+
+            setTimeout(() => {
+                reel.style.transition = `transform 10000ms cubic-bezier(0.15, 0.85, 0.15, 1.05)`; 
+                reel.style.transform = `translateY(${offset - ((12 * itemArr.length + targetIndex) * itemSize)}px)`;
+            }, 50);
+        }
+
+        // === OVERLAY KẾT QUẢ ===
+        function openOverlay() {
+            document.getElementById('result-overlay').style.display = 'flex';
+            document.getElementById('res-name').innerText = finalPlayer;
+            document.getElementById('res-q').innerText = finalQuestionObj.q;
+
+            const optsBox = document.getElementById('res-opts');
+            const mapContainer = document.getElementById('map-container');
+            const zCarousel = document.getElementById('z-carousel');
+            const btnConfirm = document.getElementById('btn-confirm-special');
+            const btnNext = document.getElementById('btn-next-turn');
+
+            optsBox.innerHTML = ''; optsBox.style.display = 'none';
+            mapContainer.style.display = 'none'; zCarousel.style.display = 'none';
+            btnConfirm.style.display = 'none'; btnNext.style.display = 'none';
+
+            if(finalQuestionObj.type === "TEXT") {
+                optsBox.style.display = 'flex'; btnNext.style.display = 'block';
+                finalQuestionObj.opts.forEach(opt => {
+                    const b = document.createElement('button'); b.className = 'res-opt-btn'; b.innerText = opt;
+                    b.onclick = () => {
+                        Array.from(optsBox.children).forEach(c => c.classList.remove('selected'));
+                        b.classList.add('selected');
+                        confetti({ particleCount: 100, spread: 60, origin: { y: 0.7 }, zIndex: 9999 });
+                    };
+                    optsBox.appendChild(b);
+                });
+            } 
+            else if(finalQuestionObj.type === "ZODIAC") {
+                zCarousel.style.display = 'flex'; zCarousel.innerHTML = ''; zCarousel.classList.remove('has-selection');
+                zodiacNames.forEach((z, i) => {
+                    const card = document.createElement('div'); card.className = 'zodiac-card';
+                    const srcToUse = zodiacImages[i] || ZODIAC_FALLBACK;
+                    
+                    card.innerHTML = `<img src="${srcToUse}" class="zodiac-img">
+                                      <div class="zodiac-info">
+                                          <div class="zodiac-name">${z.n}</div>
+                                          <div class="zodiac-years">(${z.y})</div>
+                                      </div>`;
+                    
+                    card.onclick = () => {
+                        Array.from(zCarousel.children).forEach(c => c.classList.remove('active'));
+                        zCarousel.classList.add('has-selection'); card.classList.add('active');
+                        btnConfirm.style.display = 'block'; 
+                        card.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                    };
+                    zCarousel.appendChild(card);
+                });
+                zCarousel.scrollLeft = 0;
+            }
+            else if(finalQuestionObj.type === "MAP") {
+                mapContainer.style.display = 'block';
+                if(!worldMapInstance) {
+                    worldMapInstance = new jsVectorMap({
+                        selector: '#map-container', map: 'world', zoomOnScroll: true, regionsSelectable: true, regionsSelectableOne: true, selectedRegions: [],
+                        regionStyle: { initial: { fill: '#3a506b' }, hover: { fill: '#f5a623' }, selected: { fill: '#d62828' } },
+                        onRegionSelected: function(code, isSelected) { if(isSelected) btnConfirm.style.display = 'block'; }
+                    });
+                } else { worldMapInstance.clearSelectedRegions(); worldMapInstance.updateSize(); }
+            }
+        }
+
+        function confirmSpecial() {
+            confetti({ particleCount: 500, spread: 150, origin: { y: 0.5 }, colors: ['#f5a623', '#ffffff', '#d62828'], zIndex: 9999 });
+            document.getElementById('btn-confirm-special').style.display = 'none';
+            document.getElementById('btn-next-turn').style.display = 'block';
+        }
+
+        function closeOverlay() {
+            document.getElementById('result-overlay').style.display = 'none';
+            isSpinning = false; document.getElementById('btn-spin').disabled = false;
+        }
+    </script>
+</body>
+</html>
