@@ -128,16 +128,33 @@
             transition: min-height 0.3s ease;
         }
 
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border);
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+        /* CSS MỚI CHO TOP BAR */
+		.top-bar {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 8px;
+			margin-bottom: 18px;
+			padding-bottom: 12px;
+			border-bottom: 1px solid var(--border);
+		}
+
+		.top-bar-actions {
+			display: grid;
+			grid-template-columns: auto auto auto;
+			gap: 8px;
+			align-items: center;
+		}
+
+		@media (max-width: 600px) {
+			.top-bar {
+				flex-direction: column;
+				align-items: stretch;
+			}
+			.top-bar-actions {
+				grid-template-columns: 1fr 1fr;
+			}
+		}
 
         .btn-guide-trigger {
             background: rgba(255, 255, 255, 0.05);
@@ -532,22 +549,19 @@
         <div class="glass-card">
             
             <div class="top-bar">
-                <div style="display: flex; gap: 8px; flex: 1; flex-wrap: wrap; align-items: center;">
-                    
-                    <div class="btn-guide-trigger" onclick="openGuide(true)" style="justify-content: center; padding: 6px 14px; display: flex; align-items: center; gap: 8px; border-color: rgba(168, 85, 247, 0.4); background: rgba(168, 85, 247, 0.05);">
-                        <span style="font-size: 18px; margin-top: -2px;">💡</span>
-                        <div style="display: flex; flex-direction: column; text-align: left; line-height: 1.2;">
-                            <span style="font-size: 10px; color: #fde047; font-weight: 800; text-transform: uppercase;">Hướng dẫn</span>
-                            <span style="font-size: 11px; color: #fde047; font-weight: 800;">Anweisen</span>
-                        </div>
-                    </div>
-
-                    <div id="music-btn" class="btn-guide-trigger" onclick="toggleMusic()" style="justify-content: center; flex: 1; background: rgba(56, 189, 248, 0.1); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">🎵 Melodie Bachs</div>
-                    
-                    <div id="cloud-sync-status" style="font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 10px; background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3);">☁️ Mây kết nối</div>
-                </div>
-                <span id="lek-stats" style="font-size: 13px; font-weight: 700; color: var(--success); background: rgba(52, 211, 153, 0.1); padding: 5px 12px; border-radius: 12px; margin-left: 8px;">0/0 🔥</span>
-            </div>
+				<div class="top-bar-actions">
+					<div class="btn-guide-trigger" onclick="openGuide(true)">
+						<span>💡</span>
+						<div>
+							<span style="font-size: 10px; color: #fde047; font-weight: 800;">HƯỚNG DẪN</span><br>
+							<span style="font-size: 11px; color: #fde047; font-weight: 800;">Anweisen</span>
+						</div>
+					</div>
+					<div id="music-btn" class="btn-guide-trigger" onclick="toggleMusic()">🎵 Melodie Bachs</div>
+					<div id="cloud-sync-status" style="font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 10px; background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); text-align: center;">☁️ Mây kết nối</div>
+				</div>
+				<span id="lek-stats" style="font-size: 13px; font-weight: 700; color: var(--success); background: rgba(52, 211, 153, 0.1); padding: 6px 12px; border-radius: 12px; text-align: center;">0/0 🔥</span>
+			</div>
 
             <h2>Vokabelübung</h2>
             
@@ -1008,7 +1022,7 @@ function getMaxStreak(v) {
   },
   {
     "word": "arbeiten",
-    "ans": "als jemand (Nom) bei jemandem (Dat) arbeiten",
+    "ans": "als Nom bei Dat arbeiten",
     "type": "Verb",
     "forms": "arbeitet, arbeitete, hat gearbeitet",
     "ant_b1": "spielen",
@@ -108192,43 +108206,72 @@ function openSavedVocabTable() {
     };
     loadVoices().then(voices => console.log("Voices loaded successfully!"));
 
-    function speakGerman(text) {
-        if (!text) return;
-        
-        let cleanText = text.trim();
+    // HÀM CHUẨN HÓA DỮ LIỆU ĐẦU VÀO (GỘP TOÀN BỘ VIẾT TẮT)
+function normalizeGerman(text) {
+    if (!text) return "";
 
-        cleanText = cleanText
-            .replace(/\+\s*(jmdm\.|jmdn\.|jmd\.|etw\.|etwas)\s*\((Da|Akk|D|A|Dat)\)/gi, (match, obj, kasus) => {
-                let k = /Da|D|Dat/i.test(kasus) ? "Dativ" : /Gen|G/i.test(kasus) ? "Genitiv" : "Akkusativ";
-                let o = obj.includes('jmdm') ? "jemandem" : obj.includes('jmdn') ? "jemanden" : obj.includes('jmd') ? "jemand" : "etwas";
-                return `plus ${k} ${o}`;
-            })
-            .replace(/\bDa\b|\bDat\b|\bD\b/g, "Dativ")
-            .replace(/\bAkk\b|\bA\b/g, "Akkusativ")
-            .replace(/\bGen\b|\bG\b/g, "Genitiv") 
-            .replace(/\bjmdm\b/gi, "jemandem").replace(/\bjmdn\b/gi, "jemanden").replace(/\betw\b/gi, "etwas")
-            .replace(/\b(r|r\.)\/(e|e\.)\s+(\w+)/g, "der $3, die $3")
-            .replace(/\br\.\s/g, "der ").replace(/\be\.\s/g, "die ").replace(/\bs\.\s/g, "das ");
+    const map = {
+        // Cách (Kasus)
+        'nom': 'nominativ', 'nom.': 'nominativ',
+        'akk': 'akkusativ', 'akk.': 'akkusativ', 'a': 'akkusativ',
+        'dat': 'dativ', 'dat.': 'dativ', 'd': 'dativ', 'da': 'dativ',
+        'gen': 'genitiv', 'gen.': 'genitiv', 'g': 'genitiv',
 
-        let voices = window.speechSynthesis.getVoices();
-        let stefanVoice = voices.find(v => v.name.includes("Stefan") && v.lang.startsWith("de"));
-        let defaultGermanMale = voices.find(v => v.lang.startsWith("de") && v.name.toLowerCase().includes("male"));
-        let anyGermanVoice = voices.find(v => v.lang.startsWith("de"));
+        // Đại từ & Đối tượng
+        'jmd': 'jemand', 'jmd.': 'jemand',
+        'jmdn': 'jemanden', 'jmdn.': 'jemanden',
+        'jmdm': 'jemandem', 'jmdm.': 'jemandem',
+        'etw': 'etwas', 'etw.': 'etwas',
 
-        let selectedVoice = stefanVoice || defaultGermanMale || anyGermanVoice;
+        // Mạo từ ngắn
+        'r': 'der', 'r.': 'der',
+        'e': 'die', 'e.': 'die',
+        's': 'das', 's.': 'das'
+    };
 
-        window.speechSynthesis.cancel();
+    let cleaned = text.toLowerCase()
+        .replace(/\b(r\s*\/?\s*e|e\s*\/?\s*r|r\.\s*\/?\s*e\.|e\.\s*\/?\s*r\.)\b/g, "der die")
+        .replace(/[.,\/()]/g, " ")
+        .replace(/\s+/g, ' ')
+        .trim();
 
-        if (selectedVoice) {
-            let utterance = new SpeechSynthesisUtterance(cleanText);
-            utterance.voice = selectedVoice;
-            utterance.lang = "de-DE";
-            utterance.rate = 0.95;
-            window.speechSynthesis.speak(utterance);
-        } else if (window.responsiveVoice) {
-            responsiveVoice.speak(cleanText, "Deutsch Male", { rate: 0.95 });
-        }
-    }
+    return cleaned.split(' ').map(word => map[word] || word).join(' ')
+        .replace(/\b(jemandem|jemanden|jemand)\s+(etwas)\b/g, "$2 $1");
+}
+
+// HÀM PHÁT ÂM (TỰ ĐỘNG CHUYỂN VIẾT TẮT SANG TỪ ĐẦY ĐỦ KHI ĐỌC)
+		function speakGerman(text) {
+			if (!text) return;
+			
+			let cleanText = text.trim()
+				.replace(/\bNom\.?\b/gi, "Nominativ")
+				.replace(/\bAkk\.?\b/gi, "Akkusativ")
+				.replace(/\bDat\.?\b|\bDa\b/gi, "Dativ")
+				.replace(/\bGen\.?\b/gi, "Genitiv")
+				.replace(/\bjmdm\.?\b/gi, "jemandem")
+				.replace(/\bjmdn\.?\b/gi, "jemanden")
+				.replace(/\bjmd\.?\b/gi, "jemand")
+				.replace(/\betw\.?\b/gi, "etwas")
+				.replace(/\br\.\s/g, "der ")
+				.replace(/\be\.\s/g, "die ")
+				.replace(/\bs\.\s/g, "das ");
+
+			let voices = window.speechSynthesis.getVoices();
+			let stefanVoice = voices.find(v => v.name.includes("Stefan") && v.lang.startsWith("de"));
+			let defaultGerman = voices.find(v => v.lang.startsWith("de"));
+
+			window.speechSynthesis.cancel();
+
+			if (stefanVoice || defaultGerman) {
+				let utterance = new SpeechSynthesisUtterance(cleanText);
+				utterance.voice = stefanVoice || defaultGerman;
+				utterance.lang = "de-DE";
+				utterance.rate = 0.95;
+				window.speechSynthesis.speak(utterance);
+			} else if (window.responsiveVoice) {
+				responsiveVoice.speak(cleanText, "Deutsch Male", { rate: 0.95 });
+			}
+		}
 
     function exportData() {
         const dataStr = JSON.stringify(mastery);
@@ -108438,25 +108481,38 @@ function openSavedVocabTable() {
         showWord();
     }
 
-    function normalizeGerman(text) {
-        if (!text) return "";
-        return text.toLowerCase()
-            .replace(/\b(r\s*\/?\s*e|e\s*\/?\s*r|r\.\s*\/?\s*e\.|e\.\s*\/?\s*r\.)\b/g, "der die")
-            .replace(/[.,\/()]/g, " ")
-            .replace(/\s+/g, ' ').trim()
-            .replace(/\betw\b/g, "etwas")
-            .replace(/\bjmdn\b/g, "jemanden")
-            .replace(/\bjmdm\b/g, "jemandem")
-            .replace(/\bjmd\b/g, "jemand")
-            .replace(/\br\b/g, "der")
-            .replace(/\be\b/g, "die")
-            .replace(/\bs\b/g, "das")
-            .replace(/\b(d|da|dat)\b/g, "dativ")
-            .replace(/\b(a|akk)\b/g, "akkusativ")
-            .replace(/\b(g|gen)\b/g, "genitiv")
-            .replace(/\b(nom)\b/g, "nominativ")
-            .replace(/\b(jemandem|jemanden|jemand)\s+(etwas)\b/g, "$2 $1");
-    }
+    // HÀM CHUẨN HÓA DỮ LIỆU ĐẦU VÀO (GỘP TOÀN BỘ VIẾT TẮT)
+	function normalizeGerman(text) {
+		if (!text) return "";
+
+		const map = {
+			// Cách (Kasus)
+			'nom': 'nominativ', 'nom.': 'nominativ',
+			'akk': 'akkusativ', 'akk.': 'akkusativ', 'a': 'akkusativ',
+			'dat': 'dativ', 'dat.': 'dativ', 'd': 'dativ', 'da': 'dativ',
+			'gen': 'genitiv', 'gen.': 'genitiv', 'g': 'genitiv',
+
+			// Đại từ & Đối tượng
+			'jmd': 'jemand', 'jmd.': 'jemand',
+			'jmdn': 'jemanden', 'jmdn.': 'jemanden',
+			'jmdm': 'jemandem', 'jmdm.': 'jemandem',
+			'etw': 'etwas', 'etw.': 'etwas',
+
+			// Mạo từ ngắn
+			'r': 'der', 'r.': 'der',
+			'e': 'die', 'e.': 'die',
+			's': 'das', 's.': 'das'
+		};
+
+		let cleaned = text.toLowerCase()
+			.replace(/\b(r\s*\/?\s*e|e\s*\/?\s*r|r\.\s*\/?\s*e\.|e\.\s*\/?\s*r\.)\b/g, "der die")
+			.replace(/[.,\/()]/g, " ")
+			.replace(/\s+/g, ' ')
+			.trim();
+
+		return cleaned.split(' ').map(word => map[word] || word).join(' ')
+			.replace(/\b(jemandem|jemanden|jemand)\s+(etwas)\b/g, "$2 $1");
+	}
 
     function setFilter(type) {
         currentFilter = type;
