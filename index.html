@@ -4,25 +4,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Deutsch Pro Trainer - Cloud Sync</title>
+    <title>Deutsch Pro Trainer</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     
-    <!-- FIREBASE SDK (MODULAR CDN) -->
+    <!-- FIREBASE SDK (TỰ ĐỘNG KẾT NỐI MÂY CỦA BẠN) -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // CONFIG FIREBASE CỦA BẠN (Thay thế bằng cấu hình từ Firebase Console của bạn)
         const firebaseConfig = {
-  apiKey: "AIzaSyC03AZRspyjaVN-mfN9m4RNYSFYuChaoqQ",
-  authDomain: "deutschlernen-80785.firebaseapp.com",
-  projectId: "deutschlernen-80785",
-  storageBucket: "deutschlernen-80785.firebasestorage.app",
-  messagingSenderId: "258723517724",
-  appId: "1:258723517724:web:a02ef75ed5883ac34d56d9",
-  measurementId: "G-04G40JD6TK"
-};
+            apiKey: "AIzaSyC03AZRspyjaVN-mfN9m4RNYSFYuChaoqQ",
+            authDomain: "deutschlernen-80785.firebaseapp.com",
+            projectId: "deutschlernen-80785",
+            storageBucket: "deutschlernen-80785.firebasestorage.app",
+            messagingSenderId: "258723517724",
+            appId: "1:258723517724:web:a02ef75ed5883ac34d56d9",
+            measurementId: "G-04G40JD6TK"
+        };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -35,15 +34,15 @@
     
     <style>
         :root {
-            --bg: #0b0f19;
-            --glass: rgba(17, 24, 39, 0.65);
-            --primary: #818cf8;
+            --bg: #0b0f19; /* Tông Slate/Graphite tối cao cấp */
+            --glass: rgba(17, 24, 39, 0.65); /* Kính mờ đục vừa phải */
+            --primary: #818cf8; /* Xanh tím Indigo hiện đại, dịu mắt */
             --success: #34d399;
             --danger: #f87171;
             --warning: #fbbf24;
             --warning-selected: #d97706; 
             --text: #f8fafc;
-            --border: rgba(255, 255, 255, 0.07);
+            --border: rgba(255, 255, 255, 0.07); /* Viền mỏng tinh tế */
         }
 
         body {
@@ -82,12 +81,38 @@
         }
 
         @media (max-width: 600px) {
-            body { padding: 8px; }
-            .glass-card { padding: 12px 14px; margin-bottom: 10px; border-radius: 16px; }
-            .btn-group { grid-template-columns: repeat(2, 1fr); gap: 6px; }
-            .btn-action { padding: 10px 6px; font-size: 11.5px; }
-            .quiz-vn { font-size: 19px; margin: 6px 0 10px 0; }
-            textarea#ans-input { padding: 10px; font-size: 16px; min-height: 70px; }
+            body {
+                padding: 8px; /* Giảm lề viền màn hình */
+            }
+
+            .glass-card {
+                padding: 12px 14px; /* Thu gọn khoảng trống bên trong khung */
+                margin-bottom: 10px;
+                border-radius: 16px; /* Bán kính bo góc nhỏ hơn cho màn hình nhỏ */
+            }
+
+            /* Chuyển nhóm 4 nút thao tác thành 2 hàng 2 cột để chữ rộng rãi */
+            .btn-group {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 6px;
+            }
+
+            .btn-action {
+                padding: 10px 6px;
+                font-size: 11.5px;
+            }
+
+            /* Giảm kích thước font khung từ vựng chính để không bị đè dòng */
+            .quiz-vn {
+                font-size: 19px;
+                margin: 6px 0 10px 0;
+            }
+
+            textarea#ans-input {
+                padding: 10px;
+                font-size: 16px;
+                min-height: 70px;
+            }
         }
 
         .glass-card {
@@ -134,6 +159,7 @@
             color: #fff;
         }
 
+        /* Custom Dropdown UI */
         .custom-dropdown-container {
             position: relative;
             width: 100%;
@@ -184,7 +210,8 @@
         .custom-dropdown-menu {
             position: absolute;
             top: calc(100% + 8px);
-            left: 0; right: 0;
+            left: 0;
+            right: 0;
             background: #111827;
             border: 1px solid var(--border);
             border-radius: 20px;
@@ -268,6 +295,12 @@
             border-color: #8b5cf6;
             box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
         }
+        
+        .group-tab.active {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+            border-color: #10b981 !important;
+            color: #ffffff !important;
+        }
 
         .modal-overlay {
             position: fixed;
@@ -305,6 +338,7 @@
         }
         .btn-main:active { opacity: 0.85; }
 
+        /* --- CẤU TRÚC ĐỒNG BỘ CHO NHÓM NÚT THAO TÁC (BTN-GROUP) --- */
         .btn-group { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
@@ -315,8 +349,8 @@
         .btn-action {
             border-radius: 10px;
             font-size: 12px;
-            font-weight: 600;
-            letter-spacing: 0.3px;
+            font-weight: 600; /* Dày dặn vừa đủ, không bị đậm đen */
+            letter-spacing: 0.3px; /* Giúp nét chữ thoáng, dễ đọc */
             padding: 9px 4px;
             cursor: pointer;
             text-align: center;
@@ -340,20 +374,39 @@
             background: rgba(74, 222, 128, 0.08);
             border: 1px solid rgba(74, 222, 128, 0.2);
         }
+        .btn-action.btn-select:hover {
+            background: rgba(74, 222, 128, 0.15);
+            border-color: rgba(74, 222, 128, 0.35);
+        }
+
         .btn-action.btn-deselect {
             color: #e2e8f0;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border);
         }
+        .btn-action.btn-deselect:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #ffffff;
+        }
+
         .btn-action.btn-reset {
             color: #fca5a5;
             background: rgba(248, 113, 113, 0.08);
             border: 1px solid rgba(248, 113, 113, 0.2);
         }
+        .btn-action.btn-reset:hover {
+            background: rgba(248, 113, 113, 0.15);
+            border-color: rgba(248, 113, 113, 0.35);
+        }
+
         .btn-action.btn-skip {
             color: #d8b4fe;
             background: rgba(192, 132, 252, 0.08);
             border: 1px solid rgba(192, 132, 252, 0.2);
+        }
+        .btn-action.btn-skip:hover {
+            background: rgba(192, 132, 252, 0.15);
+            border-color: rgba(192, 132, 252, 0.35);
         }
 
         .btn-sub {
@@ -393,6 +446,7 @@
             font-size: 20px; 
             font-weight: 600; 
             letter-spacing: 1px; 
+            font-variant-ligatures: none; 
             resize: none; 
             line-height: 1.5; 
             overflow: hidden; 
@@ -422,6 +476,22 @@
             cursor: pointer !important;
         }
 
+        @media (max-width: 480px), (max-height: 800px) {
+            body { padding: 10px; }
+            .glass-card { padding: 14px; margin-bottom: 12px; }
+            h2 { font-size: 20px; margin-bottom: 10px; }
+            .quiz-vn { font-size: 20px; margin: 8px 0; }
+            textarea#ans-input { padding: 12px; font-size: 18px; }
+            
+            .feedback-box { max-height: 28vh; overflow-y: auto; margin: 10px 0; min-height: 30px; padding-right: 5px; }
+            .feedback-box::-webkit-scrollbar { width: 4px; }
+            .feedback-box::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+            
+            .btn-main { padding: 12px; font-size: 15px; }
+            .btn-action { font-size: 10px; padding: 7px 1px; }
+        }
+
+        /* --- TEXT ANALYZATOR CSS --- */
         #analyzer-screen { width: 100%; max-width: 900px; margin: 0 auto; }
         .stat-card {
             background: rgba(0,0,0,0.25); border: 1px solid var(--border);
@@ -440,6 +510,7 @@
             color: #f8fafc; font-family: 'Nunito', sans-serif; font-size: 16px; line-height: 1.6;
             outline: none; resize: vertical; box-sizing: border-box; transition: all 0.3s ease;
         }
+        #analyze-input:focus { border-color: var(--primary); box-shadow: 0 0 15px rgba(192, 132, 252, 0.2); }
         #analyze-result-text {
             background: rgba(0,0,0,0.4); padding: 20px; border-radius: 16px;
             font-size: 16px; line-height: 1.8; color: #cbd5e1; border: 1px solid var(--border);
@@ -450,18 +521,6 @@
             padding: 10px 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--border);
             border-radius: 10px; margin-bottom: 8px;
         }
-        
-        .sync-badge {
-            font-size: 11px;
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .sync-online { background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); }
-        .sync-saving { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.3); }
     </style>
 </head>
 <body>
@@ -471,8 +530,10 @@
 <div class="container">
     <div id="menu-screen">
         <div class="glass-card">
+            
             <div class="top-bar">
                 <div style="display: flex; gap: 8px; flex: 1; flex-wrap: wrap; align-items: center;">
+                    
                     <div class="btn-guide-trigger" onclick="openGuide(true)" style="justify-content: center; padding: 6px 14px; display: flex; align-items: center; gap: 8px; border-color: rgba(168, 85, 247, 0.4); background: rgba(168, 85, 247, 0.05);">
                         <span style="font-size: 18px; margin-top: -2px;">💡</span>
                         <div style="display: flex; flex-direction: column; text-align: left; line-height: 1.2;">
@@ -483,7 +544,7 @@
 
                     <div id="music-btn" class="btn-guide-trigger" onclick="toggleMusic()" style="justify-content: center; flex: 1; background: rgba(56, 189, 248, 0.1); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">🎵 Melodie Bachs</div>
                     
-                    <div id="cloud-sync-status" class="sync-badge sync-online" title="Trạng thái đồng bộ mây">☁️ Mây kết nối</div>
+                    <div id="cloud-sync-status" style="font-size: 11px; font-weight: 700; padding: 5px 10px; border-radius: 10px; background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3);">☁️ Mây kết nối</div>
                 </div>
                 <span id="lek-stats" style="font-size: 13px; font-weight: 700; color: var(--success); background: rgba(52, 211, 153, 0.1); padding: 5px 12px; border-radius: 12px; margin-left: 8px;">0/0 🔥</span>
             </div>
@@ -517,6 +578,7 @@
                 </button>
             </div>
 
+            <!-- KHỐI 1: CÁC NÚT XEM DANH SÁCH -->
             <div style="display: flex; gap: 8px; margin-bottom: 24px;">
                 <button class="btn-sub flex-center-col" onclick="openVocabTable()" style="flex: 1; color: #38bdf8; border-color: rgba(56, 189, 248, 0.4); background: rgba(56, 189, 248, 0.05); padding: 12px;">
                     <span style="font-size: 12.5px; font-weight: bold;">📖 Danh sách từ vựng - Vokabelliste</span>
@@ -526,8 +588,10 @@
                 </button>
             </div>
 
+            <!-- TIÊU ĐỀ PHÂN CÁCH NHẸ NHÀNG -->
             <div style="font-size: 11px; color: #94a3b8; margin-bottom: 10px; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; padding-left: 5px;">🚀 Bắt đầu học</div>
 
+            <!-- KHỐI 2: CÁC CHẾ ĐỘ HỌC (Grid 2x2 Cân đối) -->
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;">
                 <button class="btn-main flex-center-col" style="padding: 12px;" onclick="startSession('normal')">
                     <span style="font-size: 14.5px;">Học 5 từ mới</span>
@@ -550,16 +614,24 @@
                 </button>
             </div>
 
+            <!-- KHỐI 3: NÚT VIẾT VÀ PHÂN TÍCH -->
             <button class="btn-main flex-center-col" style="background: linear-gradient(135deg, #db2777, #9333ea); margin-top: 8px; padding: 12px;" onclick="openAnalyzer()">
                 <span style="font-size: 15px;">✍️ Viết & Phân tích (Schreiben-Check)</span>
             </button>
             
-            <div style="display: flex; gap: 8px; margin-top: 15px;">
-                <button class="btn-sub flex-center-col" style="color: #cbd5e1; border-color: rgba(255,255,255,0.2); padding: 8px;" onclick="changeUserPin()">
-                    <span style="font-size: 12px;">🔑 Đổi Mã PIN Mây</span>
+            <!-- KHỐI 4: SAO LƯU, PHỤC HỒI & ĐỒNG BỘ MÂY -->
+            <div style="display: flex; gap: 8px; margin-top: 15px; flex-wrap: wrap;">
+                <button class="btn-sub flex-center-col" style="color: #34d399; border-color: #34d399; font-weight: bold; padding: 8px;" onclick="exportData()">
+                    <span style="font-size: 12px;">💾 Sao lưu (Backup)</span>
                 </button>
-                <button class="btn-sub flex-center-col" style="color: #60a5fa; border-color: #60a5fa; font-weight: bold; padding: 8px;" onclick="forceSyncFromCloud()">
-                    <span style="font-size: 12px;">🔄 Lấy từ Mây ngay</span>
+                <button class="btn-sub flex-center-col" style="color: #60a5fa; border-color: #60a5fa; font-weight: bold; padding: 8px;" onclick="importData()">
+                    <span style="font-size: 12px;">📂 Phục hồi (Restore)</span>
+                </button>
+                <button class="btn-sub flex-center-col" style="color: #cbd5e1; border-color: rgba(255,255,255,0.2); padding: 8px;" onclick="changeUserPin()">
+                    <span style="font-size: 12px;">🔑 Đổi PIN Mây</span>
+                </button>
+                <button class="btn-sub flex-center-col" style="color: #a7f3d0; border-color: #a7f3d0; font-weight: bold; padding: 8px;" onclick="forceSyncFromCloud()">
+                    <span style="font-size: 12px;">🔄 Tải từ Mây</span>
                 </button>
             </div>
         </div>
@@ -571,6 +643,7 @@
                 <button class="btn-sub" id="filter-normal" onclick="setFilter('normal')">Normal</button>
             </div>
             
+            <!-- NHÓM NÚT THAO TÁC ĐÃ TINH CHỈNH TỴ PHO NÉT CHỮ DÀY MƯỢT -->
             <div class="btn-group">
                 <button class="btn-action btn-select" onclick="toggleVisible(true)">Auswählen</button>
                 <button class="btn-action btn-deselect" onclick="toggleVisible(false)">Abwählen</button>
@@ -582,6 +655,7 @@
         </div>
     </div>
 
+    <!-- MÀN HÌNH TEXT ANALYZATOR -->
     <div id="analyzer-screen" class="hidden">
         <div class="glass-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -594,10 +668,11 @@
                 <b id="stat-words" style="font-size: 24px; color: var(--success); margin-left: 5px;">0</b>
             </div>
 
-            <div id="dynamic-level-stats" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;"></div>
+            <div id="dynamic-level-stats" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center;">
+            </div>
             
             <div style="margin-bottom: 20px;">
-                <input type="text" id="global-search-input" placeholder="🔍 Tìm kiếm từ vựng trong tất cả các cấp độ..." oninput="debounceSearch()" style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(192, 132, 252, 0.4); background: rgba(0,0,0,0.3); color: #f8fafc; font-family: 'Nunito', sans-serif; font-size: 15px; outline: none; box-sizing: border-box;">
+                <input type="text" id="global-search-input" placeholder="🔍 Tìm kiếm từ vựng trong tất cả các cấp độ..." oninput="debounceSearch()" style="width: 100%; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(192, 132, 252, 0.4); background: rgba(0,0,0,0.3); color: #f8fafc; font-family: 'Nunito', sans-serif; font-size: 15px; outline: none; box-sizing: border-box; transition: all 0.3s;">
                 <div id="search-results-container" style="margin-top: 10px; max-height: 250px; overflow-y: auto;"></div>
             </div>
             
@@ -612,6 +687,7 @@
         </div>
     </div>
 
+    <!-- MÀN HÌNH HỌC TỪ VỰNG -->
     <div id="quiz-screen" class="hidden quiz-layout">
         <div id="left-col" class="glass-card" style="visibility: hidden; border-left: 4px solid #38bdf8;">
             <div id="fb-left"></div>
@@ -624,11 +700,17 @@
                         <button class="btn-guide-sm" onclick="toggleTypingGuide()">⌨️ Cách gõ </button>
                     </div>
                     
-                    <div id="dots" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 4px;"></div>
+                    <div id="dots" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 4px;">
+                    </div>
                     
                     <div style="flex: 1; text-align: right; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                        <!-- Nút lưu từ -->
                         <span id="btn-save-word" onclick="toggleSaveCurrentWord()" style="display: inline-block; font-size: 14px; background: rgba(255, 255, 255, 0.06); padding: 5px 8px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.3s; user-select: none; cursor: pointer;" title="Speichern">Favorit</span>
+                        
+                        <!-- Nút Skip -->
                         <span id="btn-skip-word" onclick="skipCurrentWord()" style="display: inline-block; font-size: 12px; font-weight: bold; color: #cbd5e1; background: rgba(255, 255, 255, 0.06); padding: 6px 10px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.15); transition: all 0.3s; user-select: none; cursor: pointer;">Skip</span>
+                        
+                        <!-- Nút Phao cứu sinh -->
                         <span id="quiz-lifelines-icons" onclick="useOneLifeline()" style="display: inline-block; font-size: 12px; font-weight: bold; color: #60a5fa; background: rgba(96,165,250,0.1); padding: 6px 10px; border-radius: 10px; border: 1px solid rgba(96,165,250,0.3); transition: all 0.3s; user-select: none; cursor: pointer;">🛟x1</span>
                     </div>
                 </div>
@@ -652,8 +734,11 @@
                 <p onclick="backToMenu()" style="text-align: center; font-size: 12px; color: var(--text); cursor: pointer; margin-top: 15px; opacity: 0.6; margin-bottom: 0;">← Zurück zum Menü</p>
             </div>
 
-            <div id="fb-center-synonym" class="glass-card" style="display: none; margin-bottom: 0; padding: 14px; background: rgba(56, 189, 248, 0.15); border-left: 4px solid #38bdf8;"></div>
-            <div id="fb-center-antonym" class="glass-card" style="display: none; margin-bottom: 0; padding: 14px; background: rgba(251, 191, 36, 0.15); border-left: 4px solid #fbbf24;"></div>
+            <div id="fb-center-synonym" class="glass-card" style="display: none; margin-bottom: 0; padding: 14px; background: rgba(56, 189, 248, 0.15); border-left: 4px solid #38bdf8;">
+            </div>
+
+            <div id="fb-center-antonym" class="glass-card" style="display: none; margin-bottom: 0; padding: 14px; background: rgba(251, 191, 36, 0.15); border-left: 4px solid #fbbf24;">
+            </div>
         </div>
 
         <div class="glass-card">
@@ -663,6 +748,7 @@
             </div>
             <div id="heat-cloud"></div>
         </div>
+        
     </div>
 
     <div id="finish-screen" class="hidden">
@@ -675,19 +761,23 @@
     </div>
 </div>
 
+<!-- MODAL DANH SÁCH TỪ ĐÃ SKIP -->
 <div id="skipped-modal" class="modal-overlay hidden" onclick="closeSkippedModal()">
     <div class="modal-content" style="max-width: 500px; padding: 0; display: flex; flex-direction: column;" onclick="event.stopPropagation()">
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); background: #1e293b; border-radius: 24px 24px 0 0;">
             <h3 style="margin: 0; color: #c084fc; font-size: 16px; font-weight: 800; border: none; padding: 0;">⏭️ Danh sách từ đã Skip</h3>
             <button onclick="closeSkippedModal()" style="background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center;">✕</button>
         </div>
-        <div id="skipped-list-content" style="padding: 20px; overflow-y: auto; max-height: 60vh;"></div>
+        <div id="skipped-list-content" style="padding: 20px; overflow-y: auto; max-height: 60vh;">
+            <!-- Danh sách sẽ render ở đây -->
+        </div>
     </div>
 </div>
 
+<!-- MODAL THÔNG BÁO TÙY CHỈNH -->
 <div id="custom-alert-modal" class="modal-overlay hidden" onclick="closeCustomAlert()">
     <div class="modal-content flex-center-col" style="max-width: 380px; text-align: center; padding: 30px 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8);" onclick="event.stopPropagation()">
-        <div style="font-size: 45px; margin-bottom: 12px;" id="alert-icon">🔔</div>
+        <div style="font-size: 45px; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));" id="alert-icon">🔔</div>
         <h3 id="alert-title" style="color: #fff; font-size: 20px; margin-bottom: 10px; border: none; padding: 0; justify-content: center; width: 100%;">Thông báo</h3>
         <p id="alert-message" style="color: #cbd5e1; font-size: 14.5px; line-height: 1.5; margin-bottom: 25px;">Nội dung thông báo</p>
         <button class="btn-main" style="padding: 12px 30px; width: auto; font-size: 15px; border-radius: 12px;" onclick="closeCustomAlert()">Đã hiểu (OK)</button>
@@ -698,35 +788,99 @@
     <div class="modal-content" onclick="event.stopPropagation()">
         <h3>💡 Hướng dẫn sử dụng (Anleitung)</h3>
         <ul>
-            <li style="background: linear-gradient(135deg, #d97706, #b45309); padding: 18px; border-radius: 16px; border: none; margin-bottom: 20px; text-align: left;">
-                <div style="background: #ffffff; color: #b45309; display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: 800; font-size: 11px; margin-bottom: 10px; text-transform: uppercase;">
+            <li style="background: linear-gradient(135deg, #d97706, #b45309); padding: 18px; border-radius: 16px; border: none; box-shadow: 0 8px 25px rgba(217, 119, 6, 0.3); margin-bottom: 20px; text-align: left;">
+                <div style="background: #ffffff; color: #b45309; display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: 800; font-size: 11px; margin-bottom: 10px; text-transform: uppercase; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                     🧠 PHƯƠNG PHÁP HỌC / LERN-TIPP 
-                    <span class="lang-vi" style="color: #b45309; font-weight: 800; font-size: 14px; margin-bottom: 6px; display: block;">* Quan trọng nhất *</span>
+                    <span class="lang-vi" style="color: #b45309; font-weight: 800; font-size: 14px; margin-bottom: 6px; display: block;">* Quan trọng nhất (Das Wichtigste) *</span>
                 </div>
-                <span class="lang-vi" style="color: #ffffff; font-weight: 600; line-height: 1.4; display: block; margin-bottom: 8px;">Lấy <b>5 từ sai nhiều nhất</b> trên <b>Heat-map</b> và viết thành <b>1 ngữ cảnh</b>!</span>
+
+                <span class="lang-vi" style="color: #ffffff; font-weight: 600; line-height: 1.4; display: block; margin-bottom: 8px;">Lấy <b>5 từ sai nhiều nhất</b> trên <b>Heat-map</b> và viết thành <b>1 ngữ cảnh</b> – đây là cách học tốt nhất!</span>
+                <span class="lang-de" style="color: rgba(255,255,255,0.9); font-weight: 500; font-size: 13px; line-height: 1.4; display: block;"><i>(Die 5 häufigsten Fehlerwörter auf der Heatmap in einen Kontext setzen – das ist die beste Lernmethode!)</i></span>
+                                                                                                                                                                                                                                                                    
+                <div style="height: 1px; background: rgba(255,255,255,0.3); margin: 12px 0;"></div>
+
+                <span class="lang-de" style="color: rgba(255,255,255,0.95); font-weight: 800; font-size: 13px; margin-bottom: 4px; display: block;">📝 VÍ DỤ MINH HỌA (BEISPIEL):</span>
+                <span class="lang-de" style="color: rgba(255,255,255,0.85); font-weight: 600; line-height: 1.4; font-size: 12.5px; display: block; font-style: italic;">"Heute habe ich einen alten Freund <b>angesprochen</b> und <b>begrüßt</b>. Wir arbeiten seit 10 Jahren als <b>Informatiker</b>. Er <b>vertritt</b> oft hartnäckig seinen <b>Standpunkt</b>, da sich seine Ansichten von denen der anderen Kollegen stark unterscheiden."</span>
+            </li>
+
+            <li style="background: linear-gradient(135deg, #9333ea, #db2777); padding: 18px; border-radius: 16px; border: none; box-shadow: 0 8px 25px rgba(219, 39, 119, 0.3); margin-bottom: 20px; text-align: left;">
+                <div style="background: #ffffff; color: #db2777; display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: 800; font-size: 11px; margin-bottom: 10px; text-transform: uppercase; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">WICHTIG / QUAN TRỌNG</div>
+                <span class="lang-vi" style="color: #ffffff; font-weight: 800; font-size: 15px; margin-bottom: 6px; display: block;">💾 Quan trọng: Sao lưu dữ liệu</span>
+                <span class="lang-vi" style="color: #ffffff; font-weight: 600; line-height: 1.4; display: block;">Bạn nhớ bấm nút "Sao lưu Streak", nếu không tiến độ học của bạn có thể sẽ mất. Chỉ tốn 1 giây sao lưu để bảo vệ thành quả của mình!</span>
+                <div style="height: 1px; background: rgba(255,255,255,0.25); margin: 12px 0;"></div>
+                <span class="lang-de" style="color: rgba(255,255,255,0.6); font-weight: 800; font-size: 13px; margin-bottom: 4px; display: block;">💾 Datensicherung (Backup)</span>
+                <span class="lang-de" style="color: rgba(255,255,255,0.5); font-weight: 600; line-height: 1.4; font-size: 12px; display: block;">Klicken Sie auf die Schaltfläche „Backup“, sonst geht Ihr Fortschritt verloren.</span>
+            </li>
+
+            <li>
+                <span class="lang-vi" style="color: var(--primary); font-weight: 700; display: block;">✨ Chấp nhận chữ viết tắt</span>
+                <span class="lang-vi" style="color: #ffffff; display: block;">Hệ thống chấp nhận các từ gõ tắt cho các cách ngữ pháp (Nom, Akk, Dat, Gen) và các đại từ (jmd, jmdn, jmdm, etw) và không cần ngoặc đơn để giúp bạn tăng tốc độ làm bài.</span>
+                <span class="lang-de" style="color: #64748b; font-weight: 700; display: block; margin-top: 8px;">✨ Akzeptierte Abkürzungen</span>
+                <span class="lang-de" style="color: #64748b; display: block; font-size: 12.5px;">Das System akzeptiert Kurzformen (Nom, Akk, Dat, Gen, Pronomen) ohne Klammern.</span>
+            </li>
+            
+            <li>
+                <span class="lang-vi" style="color: #ffffff; display: block;"><b>Lọc bài học (Lektion):</b> Bấm chọn các Lek để ôn tập. Bài học đang chọn sẽ hiện dạng khối màu cam.</span>
+                <span class="lang-de" style="color: #64748b; display: block; margin-top: 4px; font-size: 12.5px;"><b>Lektionen auswählen:</b> Wählen Sie die Lektionen. Die aktive Lektion ist markiert.</span>
+            </li>
+            
+            <li>
+                <span class="lang-vi" style="color: #ffffff; display: block;"><b>Học theo 2 bước:</b> Bước 1 gõ từ gốc (với Danh từ bắt buộc gõ kèm đuôi số nhiều), Bước 2 gõ đầy đủ cụm từ cố định hay gặp.</span>
+                <span class="lang-de" style="color: #64748b; display: block; margin-top: 4px; font-size: 12.5px;"><b>2-Schritte-Methode:</b> Schritt 1: Stammwort (inkl. Plural). Schritt 2: feste Kollokation.</span>
+            </li>
+            
+            <li style="border: 1px solid rgba(96, 165, 250, 0.3); background: rgba(96, 165, 250, 0.05); padding: 14px; border-radius: 12px; margin-top: 12px;">
+                <span class="lang-vi" style="color: #60a5fa; font-weight: 700; display: block; margin-bottom: 6px; font-size: 15px;">🛟 Cơ chế xài Phao 🛟</span>
+                <span class="lang-vi" style="color: #ffffff; display: block; line-height: 1.5;">Mỗi ngày bắt đầu với 1 phao. Cứ 3 từ đạt đủ điểm (3/3 🔥), bạn sẽ nhận được 1 🛟 (tối đa 7 cái). Khi gõ sai, cái Phao sẽ nhấp nháy, bạn có thể bấm vào đó để sử dụng (Không mất Streak và chỉ cần gõ lại 1 lần). Nếu bấm Enter sẽ bị tính là Sai (Mất streak & phạt gõ 3 lần). Làm mới lúc 02:00 UTC.</span>
+                
+                <div style="background: rgba(251, 191, 36, 0.15); border: 1px dashed rgba(251, 191, 36, 0.4); padding: 10px; border-radius: 8px; margin-top: 10px; color: #fde047; font-size: 13px;">
+                    💡 <b>Mẹo nhỏ:</b> Nếu bạn đã dùng hết phao 🛟, hãy tạm đóng app và nghỉ ngơi một chút nhé. Học ngôn ngữ cần sự bền bỉ, ép bản thân khi đang mệt sẽ không mang lại hiệu quả cao.
+                </div>
+                
+                <span class="lang-de" style="color: rgba(96, 165, 250, 0.6); font-weight: 700; display: block; margin-top: 12px;">🛟 Rettungsring 🛟</span>
+                <span class="lang-de" style="color: #64748b; display: block; font-size: 12.5px; line-height: 1.4;">Du beginnst jeden Tag mit 1 Rettungsring. Für jeweils 3 gemeisterte Wörter (3/3 🔥) erhältst du 1 🛟 (maximal 7). Bei einem Tippfehler blinkt der Rettungsring. Tippe ihn an, um ihn zu nutzen (kein Serien-Verlust, nur 1 neuer Versuch). Drücken der Eingabetaste zählt als Fehler (Serien-Verlust + 3 Versuche). Reset um 02:00 UTC.</span>
+                
+                <div style="background: rgba(251, 191, 36, 0.05); border: 1px dashed rgba(251, 191, 36, 0.2); padding: 10px; border-radius: 8px; margin-top: 8px; color: rgba(251, 191, 36, 0.7); font-size: 12px; font-style: italic;">
+                    💡 <b>Tipp:</b> Wenn du 7 Rettungsringe 🛟 aufgebraucht hast, mach am besten eine kurze Pause. Sprachenlernen erfordert Ausdauer – erzwinge nichts, wenn du erschöpft bist.
+                </div>
+            </li>
+            <li>
+                <span class="lang-vi" style="color: #ffffff; display: block;"> Có gì xin liên hệ / Bei Fragen kontaktieren Sie uns bitte.:</span>
+                <span class="lang-vi" style="color: #ffffff; display: block;"> tien.lengoc10Sep@gmail.com</span>
             </li>
         </ul>
+        
+        <div id="dont-show-again-container" style="margin-bottom: 15px; display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.02); padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
+            <input type="checkbox" id="dont-show-guide-checkbox" style="cursor: pointer; transform: scale(1.2);">
+            <label for="dont-show-guide-checkbox" style="font-size: 13px; color: #cbd5e1; cursor: pointer; user-select: none;">Không hiện bảng hướng dẫn này khi mở Webseite nữa / Dieser Tutorial-Bildschirm wird beim Öffnen die Webseite nicht mehr angezeigt.</label>
+        </div>
+
         <button class="btn-main" style="padding: 12px; font-size: 14px; border-radius: 12px;" onclick="handleCloseGuideButton()">Đóng lại (Schließen)</button>
     </div>
 </div>
 
 <div id="vocab-table-modal" class="modal-overlay hidden" onclick="closeVocabTable()">
     <div class="modal-content" style="max-width: 700px; max-height: 90vh; padding: 0; display: flex; flex-direction: column;" onclick="event.stopPropagation()">
+        
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 18px 22px; border-bottom: 1px solid var(--border); background: #1e293b; border-radius: 24px 24px 0 0;">
             <h3 style="margin: 0; color: var(--primary); font-size: 18px; border: none; padding: 0;" id="vocab-table-title">📖 Lektion...</h3>
             <button onclick="closeVocabTable()" style="background: rgba(255,255,255,0.1); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center;">✕</button>
         </div>
-        <div id="vocab-table-content" style="padding: 22px; overflow-y: auto; flex: 1;"></div>
+
+        <div id="vocab-table-content" style="padding: 22px; overflow-y: auto; flex: 1;">
+        </div>
+        
     </div>
 </div>
 
 <script>
+
 function getMaxStreak(v) {
     if (!v) return 3;
     return (v.level && v.level.includes("B1")) ? 2 : 3;
 }
 
-    // Dữ liệu từ vựng của bạn
+    // Mảng dữ liệu của bạn, giữ nguyên biến này
     const data = [
   {
     "word": "abbiegen",
@@ -107408,17 +107562,36 @@ function getMaxStreak(v) {
             width: '10',
             videoId: '0n1XLJse7sQ',
             playerVars: {
-                'autoplay': 0, 'controls': 0, 'showinfo': 0, 'rel': 0, 'loop': 1, 'playlist': '0n1XLJse7sQ' 
+                'autoplay': 0,
+                'controls': 0,
+                'showinfo': 0,
+                'rel': 0,
+                'loop': 1,
+                'playlist': '0n1XLJse7sQ' 
             },
             events: {
-                'onReady': function(event) { event.target.setVolume(60); }
+                'onReady': function(event) {
+                    event.target.setVolume(60);
+                }
             }
         });
     }
 
     function toggleMusic() {
         const btn = document.getElementById('music-btn');
-        if (!ytPlayer || typeof ytPlayer.getPlayerState !== 'function') return;
+        
+        if (!ytPlayer || typeof ytPlayer.getPlayerState !== 'function') {
+            const oldText = btn.innerHTML;
+            btn.innerHTML = '⏳ Đang kết nối...';
+            btn.style.opacity = '0.7';
+            setTimeout(() => {
+                if (btn.innerHTML === '⏳ Đang kết nối...') {
+                    btn.innerHTML = oldText;
+                    btn.style.opacity = '1';
+                }
+            }, 1500);
+            return;
+        }
 
         const state = ytPlayer.getPlayerState();
         if (state === 1 || state === 3) {
@@ -107426,32 +107599,38 @@ function getMaxStreak(v) {
             btn.innerHTML = '🎵 Melodie Bachs';
             btn.style.background = 'rgba(56, 189, 248, 0.1)';
             btn.style.color = '#38bdf8';
+            btn.style.borderColor = 'rgba(56, 189, 248, 0.3)';
         } else {
             ytPlayer.setVolume(60);
             ytPlayer.playVideo();
             btn.innerHTML = '⏸️ Melodie Bachs';
             btn.style.background = 'rgba(234, 88, 12, 0.2)';
             btn.style.color = '#fff';
+            btn.style.borderColor = '#ea580c';
         }
     }
 
+    /* === HỆ THỐNG ĐỒNG BỘ CLOUD FIREBASE DUAL-LAYER === */
     function updateSyncStatusUI(statusText, isSaving = false) {
         const badge = document.getElementById('cloud-sync-status');
         if (!badge) return;
         if (isSaving) {
-            badge.className = "sync-badge sync-saving";
+            badge.style.background = "rgba(251, 191, 36, 0.15)";
+            badge.style.color = "#fbbf24";
+            badge.style.borderColor = "rgba(251, 191, 36, 0.3)";
             badge.innerHTML = "⏳ Đang lưu mây...";
         } else {
-            badge.className = "sync-badge sync-online";
+            badge.style.background = "rgba(52, 211, 153, 0.15)";
+            badge.style.color = "#34d399";
+            badge.style.borderColor = "rgba(52, 211, 153, 0.3)";
             badge.innerHTML = `☁️ ${statusText}`;
         }
     }
 
-    // LƯU HAI TẦNG: LocalStorage + Firebase Cloud
-    async function save() {
-        localStorage.setItem('b2_pro_v1', JSON.stringify(mastery));
-        renderList();
-        
+    async function save() { 
+        localStorage.setItem('b2_pro_v1', JSON.stringify(mastery)); 
+        renderList(); 
+
         if (userPin && window.db) {
             updateSyncStatusUI("", true);
             try {
@@ -107463,7 +107642,7 @@ function getMaxStreak(v) {
                 updateSyncStatusUI("Mây đã đồng bộ");
             } catch (err) {
                 console.error("Lỗi đồng bộ Mây:", err);
-                updateSyncStatusUI("Lỗi mây (Lưu máy local)");
+                updateSyncStatusUI("Lỗi mây (Lưu local)");
             }
         }
     }
@@ -107476,7 +107655,7 @@ function getMaxStreak(v) {
         }
 
         if (window.db) {
-            updateSyncStatusUI("Đang tải dữ liệu mây...");
+            updateSyncStatusUI("Đang tải mây...");
             try {
                 const userDocRef = window.doc(window.db, "user_progress", userPin);
                 const docSnap = await window.getDoc(userDocRef);
@@ -107516,6 +107695,7 @@ function getMaxStreak(v) {
 
     function checkGroupMatch(v, grpId) {
         if (grpId === 'all') return true;
+
         const groupAndType = `${v.group || ''} ${v.type || ''}`.toLowerCase();
         const ansText = (v.ans || '').toLowerCase();
         const wordText = (v.word || '').toLowerCase();
@@ -107532,12 +107712,20 @@ function getMaxStreak(v) {
         return true;
     }
 
-    function isMatchGroup(v) { return checkGroupMatch(v, currentGroup); }
+    function isMatchGroup(v) {
+        return checkGroupMatch(v, currentGroup);
+    }
 
     function isMatchLek(v, targetLek) {
-        if (targetLek === 'redemittel') return (v.type && v.type.toLowerCase().includes("redemittel")) || v.lek === "redemittel";
-        if (targetLek === 'fehler') return (v.type && v.type.toLowerCase().includes("fehler"));
-        if (targetLek === 'advanced') return v.lek == 0 || v.lek === "morong";
+        if (targetLek === 'redemittel') {
+            return (v.type && v.type.toLowerCase().includes("redemittel")) || v.lek === "redemittel";
+        }
+        if (targetLek === 'fehler') {
+            return (v.type && v.type.toLowerCase().includes("fehler"));
+        }
+        if (targetLek === 'advanced') {
+            return v.lek == 0 || v.lek === "morong";
+        }
         return v.lek == targetLek;
     }
 
@@ -107552,10 +107740,12 @@ function getMaxStreak(v) {
     function renderLevelSelector() {
         const container = document.getElementById('level-selector');
         if (!container) return;
+        
         if (availableLevels.length === 0) {
-            container.innerHTML = '<span style="font-size:12px; color:#94a3b8;">Chưa có dữ liệu từ vựng.</span>';
+            container.innerHTML = '<span style="font-size:12px; color:#94a3b8;">Chưa có dữ liệu từ vựng cho bất kỳ cấp độ nào.</span>';
             return;
         }
+        
         container.innerHTML = availableLevels.map(lvl => `
             <div class="level-tab ${lvl === currentLevel ? 'active' : ''}" onclick="selectLevel('${lvl}')">${lvl}</div>
         `).join('');
@@ -107574,11 +107764,13 @@ function getMaxStreak(v) {
         }
 
         wrapper.classList.remove('hidden');
+
         const currentObj = MAIN_GROUPS.find(g => g.id === currentGroup) || MAIN_GROUPS[0];
         label.innerText = currentObj.name;
 
         menu.innerHTML = MAIN_GROUPS.map(grp => `
-            <div class="custom-dropdown-option ${grp.id === currentGroup ? 'selected' : ''}" onclick="handleGroupSelect('${grp.id}')">
+            <div class="custom-dropdown-option ${grp.id === currentGroup ? 'selected' : ''}" 
+                 onclick="handleGroupSelect('${grp.id}')">
                 ${grp.name}
             </div>
         `).join('');
@@ -107600,6 +107792,7 @@ function getMaxStreak(v) {
         currentGroup = 'all';
         localStorage.setItem('b2_last_level', lvl);
         localStorage.setItem('b2_last_group', 'all');
+        
         renderLevelSelector();
         renderGroupSelector();
         renderLektionButtons();
@@ -107610,6 +107803,7 @@ function getMaxStreak(v) {
     function selectGroup(grp) {
         currentGroup = grp;
         localStorage.setItem('b2_last_group', grp);
+        
         renderGroupSelector();
         renderLektionButtons();
         renderList();
@@ -107654,7 +107848,9 @@ function getMaxStreak(v) {
             else leks.add(v.lek);
         });
 
-        const sortedLeks = Array.from(leks).sort((a, b) => (!isNaN(a) && !isNaN(b)) ? a - b : String(a).localeCompare(String(b)));
+        const sortedLeks = Array.from(leks).sort((a, b) => {
+            return (!isNaN(a) && !isNaN(b)) ? a - b : String(a).localeCompare(String(b));
+        });
 
         const isValidCurrent = (currentLek === 'redemittel' && hasRedemittel) ||
                                (currentLek === 'advanced' && hasAdv) ||
@@ -107704,6 +107900,7 @@ function getMaxStreak(v) {
             redeBtn.style.background = isSelected ? '#0284c7' : 'rgba(255,255,255,0.03)';
             redeBtn.style.borderColor = isSelected ? '#0284c7' : 'var(--border)';
             redeBtn.style.color = isSelected ? '#ffffff' : '#38bdf8';
+            redeBtn.style.fontWeight = isSelected ? '800' : 'bold';
         }
 
         if (advBtn) {
@@ -107711,6 +107908,7 @@ function getMaxStreak(v) {
             advBtn.style.background = isSelected ? '#059669' : 'rgba(255,255,255,0.03)';
             advBtn.style.borderColor = isSelected ? '#059669' : 'var(--border)';
             advBtn.style.color = isSelected ? '#ffffff' : '#34d399';
+            advBtn.style.fontWeight = isSelected ? '800' : 'bold';
         }
     }
 
@@ -107720,64 +107918,161 @@ function getMaxStreak(v) {
     }
 
     function openVocabTable() {
-        const currentData = data.filter(v => v.level === currentLevel && isMatchGroup(v) && isMatchLek(v, currentLek) && (!mastery[v.word] || !mastery[v.word].skipped)); 
-        let lekName = `Lektion ${currentLek}`;
-        if (currentLek === 'redemittel') lekName = "Redemittel";
-        if (currentLek === 'advanced') lekName = "Wortschatz +";
-        document.getElementById('vocab-table-title').innerText = `📖 ${lekName} (${currentLevel}) - ${currentData.length} Wörter`;
+    const currentData = data.filter(v => v.level === currentLevel && isMatchGroup(v) && isMatchLek(v, currentLek) && (!mastery[v.word] || !mastery[v.word].skipped)); 
+    let lekName = `Lektion ${currentLek}`;
+    if (currentLek === 'redemittel') lekName = "Redemittel";
+    if (currentLek === 'advanced') lekName = "Wortschatz +";
+    document.getElementById('vocab-table-title').innerText = `📖 ${lekName} (${currentLevel}) - ${currentData.length} Wörter`;
 
-        const container = document.getElementById('vocab-table-content');
-        if (currentData.length === 0) {
-            container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding: 20px;">Keine Wörter in dieser Lektion.</div>`;
-        } else {
-            container.innerHTML = currentData.map((v, index) => `
-                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 16px;">
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 10px; margin-bottom: 12px;">
-                        <div style="display: flex; align-items: center; gap: 8px; color: var(--primary); font-size: 18px; font-weight: 800; flex-wrap: wrap;">
-                            ${index + 1}. ${v.word} 
-                            <span onclick="event.stopPropagation(); speakGerman('${v.word.replace(/'/g, "\\'")}')" style="cursor:pointer; font-size: 16px;">🔊</span>
-                            <button onclick="toggleSaveGlobal('${v.word.replace(/'/g, "\\'")}')" style="background: ${mastery[v.word] && mastery[v.word].saved ? 'rgba(250, 204, 21, 0.1)' : 'rgba(255, 255, 255, 0.06)'}; border: 1px solid ${mastery[v.word] && mastery[v.word].saved ? 'rgba(250, 204, 21, 0.5)' : 'rgba(255, 255, 255, 0.15)'}; border-radius: 8px; padding: 2px 8px; font-size: 12px; cursor: pointer;">
-                                ${mastery[v.word] && mastery[v.word].saved ? '💛' : '🤍'}
-                            </button>
-                        </div>
-                        <div style="color: var(--success); font-weight: 700; font-size: 15px; text-align: right; margin-left: 10px;">
-                            ${v.vnword || ''}
-                        </div>
+    const container = document.getElementById('vocab-table-content');
+    if (currentData.length === 0) {
+        container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding: 20px;">Keine Wörter in dieser Lektion.</div>`;
+    } else {
+        container.innerHTML = currentData.map((v, index) => `
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 10px; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px; color: var(--primary); font-size: 18px; font-weight: 800; flex-wrap: wrap;">
+                        ${index + 1}. ${v.word} 
+                        <span onclick="event.stopPropagation(); speakGerman('${v.word.replace(/'/g, "\\'")}')" style="cursor:pointer; font-size: 16px;" title="Nghe từ">🔊</span>
+                        <button onclick="toggleSaveGlobal('${v.word.replace(/'/g, "\\'")}')" style="background: ${mastery[v.word] && mastery[v.word].saved ? 'rgba(250, 204, 21, 0.1)' : 'rgba(255, 255, 255, 0.06)'}; border: 1px solid ${mastery[v.word] && mastery[v.word].saved ? 'rgba(250, 204, 21, 0.5)' : 'rgba(255, 255, 255, 0.15)'}; border-radius: 8px; padding: 2px 8px; font-size: 12px; cursor: pointer; transition: all 0.2s;">
+                            ${mastery[v.word] && mastery[v.word].saved ? '💛' : '🤍'}
+                        </button>
+                        <span style="font-size: 12px; color: #94a3b8; font-weight: normal; font-style: italic; display: inline-block;">${v.forms || ''}</span>
                     </div>
-                    <div style="margin-bottom: 12px;">
-                        <div style="color: #f8fafc; font-weight: bold; font-size: 15px;">${v.ans || ''}</div>
-                        <div style="color: #cbd5e1; font-size: 13.5px; margin-top: 2px;">${v.vnans || ''}</div>
-                    </div>
+                    ${!isNurDeutsch ? `
+                    <div style="color: var(--success); font-weight: 700; font-size: 15px; text-align: right; margin-left: 10px;">
+                        ${v.vnword || ''}
+                    </div>` : ''}
                 </div>
-            `).join('');
-        }
-        document.getElementById('vocab-table-modal').classList.remove('hidden');
+
+                <div style="margin-bottom: 12px;">
+                    <div style="color: #f8fafc; font-weight: bold; font-size: 15px;">
+                        ${v.ans || ''}
+                        ${v.ans ? `<span onclick="event.stopPropagation(); speakGerman('${v.ans.replace(/'/g, "\\'")}')" style="cursor:pointer; font-size: 14px; margin-left: 4px;" title="Nghe cấu trúc">🔊</span>` : ''}
+                    </div>
+                    ${!isNurDeutsch ? `<div style="color: #cbd5e1; font-size: 13.5px; margin-top: 2px;">${v.vnans || ''}</div>` : ''}
+                </div>
+
+                ${v.giai_thich_dong_nghia ? `
+                <div style="background: rgba(56, 189, 248, 0.1); border-left: 3px solid #38bdf8; padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+                    <div style="color: #38bdf8; font-weight: bold; font-size: 13px; margin-bottom: 4px;">
+                        🔄 Synonyme: 
+                        ${v.dong_nghia_b1 ? `<span style="color:#fff">${v.dong_nghia_b1}</span> <span onclick="event.stopPropagation(); speakGerman('${v.dong_nghia_b1.replace(/'/g, "\\'")}')" style="cursor:pointer" title="Nghe từ B1">🔊</span> (B1)` : ''} 
+                        ${v.dong_nghia_b2 ? `/ <span style="color:#fff">${v.dong_nghia_b2}</span> <span onclick="event.stopPropagation(); speakGerman('${v.dong_nghia_b2.replace(/'/g, "\\'")}')" style="cursor:pointer" title="Nghe từ B2">🔊</span> (B2)` : ''}
+                    </div>
+                    ${!isNurDeutsch ? `<div style="color: #e0f2fe; font-size: 12.5px; font-style: italic; line-height: 1.4;">${v.giai_thich_dong_nghia}</div>` : ''}
+                </div>` : ''}
+
+                ${v.ant && v.ant !== '-' ? `
+                <div style="color: #fbbf24; font-size: 13px; font-weight: bold; margin-bottom: 12px;">
+                    ⚔️ Gegenteil: <span style="color: #fde047; margin-left: 4px; font-size: 14px;">${v.ant}</span>
+                    <span onclick="event.stopPropagation(); speakGerman('${v.ant.replace(/'/g, "\\'")}')" style="cursor:pointer; margin-left: 4px;" title="Nghe từ trái nghĩa">🔊</span>
+                </div>` : ''}
+
+                <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px;">
+                    ${v.b1_ex && v.b1_ex !== '-' ? `
+                    <div style="margin-bottom: ${v.b2_ex && v.b2_ex !== '-' ? '10px' : '0'}; padding-bottom: ${v.b2_ex && v.b2_ex !== '-' ? '10px' : '0'}; border-bottom: ${v.b2_ex && v.b2_ex !== '-' ? '1px dashed rgba(255,255,255,0.1)' : 'none'};">
+                        <div style="color: #f8fafc; font-size: 13.5px; margin-bottom: 3px;">
+                            <b>B1:</b> ${v.b1_ex}
+                            <span onclick="event.stopPropagation(); speakGerman('${v.b1_ex.replace(/'/g, "\\'")}')" style="cursor:pointer; margin-left: 4px;" title="Nghe ví dụ B1">🔊</span>
+                        </div>
+                        ${!isNurDeutsch ? `<div style="color: #94a3b8; font-size: 12.5px; font-style: italic;">${v.vn_b1 || ''}</div>` : ''}
+                    </div>` : ''}
+                    
+                    ${v.b2_ex && v.b2_ex !== '-' ? `
+                    <div>
+                        <div style="color: #f8fafc; font-size: 13.5px; margin-bottom: 3px;">
+                            <b>B2:</b> ${v.b2_ex}
+                            <span onclick="event.stopPropagation(); speakGerman('${v.b2_ex.replace(/'/g, "\\'")}')" style="cursor:pointer; margin-left: 4px;" title="Nghe ví dụ B2">🔊</span>
+                        </div>
+                        ${!isNurDeutsch ? `<div style="color: #94a3b8; font-size: 12.5px; font-style: italic;">${v.vn_b2 || ''}</div>` : ''}
+                    </div>` : ''}
+                </div>
+            </div>
+        `).join('');
     }
 
-    function openSavedVocabTable() {
-        const savedData = data.filter(v => mastery[v.word] && mastery[v.word].saved);
-        document.getElementById('vocab-table-title').innerText = `💛 Danh sách đã lưu - ${savedData.length} Wörter`;
-        const container = document.getElementById('vocab-table-content');
-        
-        if (savedData.length === 0) {
-            container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding: 20px;">Bạn chưa lưu từ vựng nào.</div>`;
-        } else {
-            container.innerHTML = savedData.map((v, index) => `
-                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 16px;">
-                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 10px; margin-bottom: 12px;">
-                        <div style="display: flex; align-items: center; gap: 8px; color: var(--primary); font-size: 18px; font-weight: 800; flex-wrap: wrap;">
-                            ${index + 1}. ${v.word} 
-                            <button onclick="toggleSaveGlobal('${v.word.replace(/'/g, "\\'")}')" style="background: rgba(250, 204, 21, 0.1); border: 1px solid rgba(250, 204, 21, 0.5); border-radius: 8px; padding: 2px 8px; font-size: 12px; cursor: pointer;">
-                                💛
-                            </button>
-                        </div>
-                        <div style="color: var(--success); font-weight: 700; font-size: 15px;">${v.vnword || ''}</div>
+    document.getElementById('vocab-table-modal').classList.remove('hidden');
+}
+
+
+function openSavedVocabTable() {
+    const savedData = data.filter(v => mastery[v.word] && mastery[v.word].saved);
+    
+    document.getElementById('vocab-table-title').innerText = `💛 Danh sách đã lưu - ${savedData.length} Wörter`;
+    const container = document.getElementById('vocab-table-content');
+    
+    if (savedData.length === 0) {
+        container.innerHTML = `<div style="text-align:center; color:#94a3b8; padding: 20px;">Bạn chưa lưu từ vựng nào. Hãy bấm 🤍 khi học để lưu nhé!</div>`;
+    } else {
+        container.innerHTML = savedData.map((v, index) => `
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 10px; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px; color: var(--primary); font-size: 18px; font-weight: 800; flex-wrap: wrap;">
+                        ${index + 1}. ${v.word} 
+                        <span onclick="event.stopPropagation(); speakGerman('${v.word.replace(/'/g, "\\'")}')" style="cursor:pointer; font-size: 16px;" title="Nghe từ">🔊</span>
+                        <button onclick="toggleSaveGlobal('${v.word.replace(/'/g, "\\'")}')" style="background: rgba(250, 204, 21, 0.1); border: 1px solid rgba(250, 204, 21, 0.5); border-radius: 8px; padding: 2px 8px; font-size: 12px; cursor: pointer; transition: all 0.2s;">
+                            💛
+                        </button>
+                        <span style="font-size: 12px; color: #94a3b8; font-weight: normal; font-style: italic;">(${v.level})</span>
                     </div>
-                    <div>${v.ans || ''}</div>
+                    ${!isNurDeutsch ? `<div style="color: var(--success); font-weight: 700; font-size: 15px; text-align: right; margin-left: 10px;">${v.vnword || ''}</div>` : ''}
                 </div>
-            `).join('');
-        }
-        document.getElementById('vocab-table-modal').classList.remove('hidden');
+
+                <div style="margin-bottom: 12px;">
+                    <div style="color: #f8fafc; font-weight: bold; font-size: 15px;">
+                        ${v.ans || ''}
+                        ${v.ans ? `<span onclick="event.stopPropagation(); speakGerman('${v.ans.replace(/'/g, "\\'")}')" style="cursor:pointer; font-size: 14px; margin-left: 4px;" title="Nghe cấu trúc">🔊</span>` : ''}
+                    </div>
+                    ${!isNurDeutsch ? `<div style="color: #cbd5e1; font-size: 13.5px; margin-top: 2px;">${v.vnans || ''}</div>` : ''}
+                </div>
+
+                ${v.giai_thich_dong_nghia ? `
+                <div style="background: rgba(56, 189, 248, 0.1); border-left: 3px solid #38bdf8; padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+                    <div style="color: #38bdf8; font-weight: bold; font-size: 13px; margin-bottom: 4px;">
+                        🔄 Synonyme: 
+                        ${v.dong_nghia_b1 ? `<span style="color:#fff">${v.dong_nghia_b1}</span> <span onclick="event.stopPropagation(); speakGerman('${v.dong_nghia_b1.replace(/'/g, "\\'")}')" style="cursor:pointer">🔊</span> (B1)` : ''} 
+                        ${v.dong_nghia_b2 ? `/ <span style="color:#fff">${v.dong_nghia_b2}</span> <span onclick="event.stopPropagation(); speakGerman('${v.dong_nghia_b2.replace(/'/g, "\\'")}')" style="cursor:pointer">🔊</span> (B2)` : ''}
+                    </div>
+                    ${!isNurDeutsch ? `<div style="color: #e0f2fe; font-size: 12.5px; font-style: italic; line-height: 1.4;">${v.giai_thich_dong_nghia}</div>` : ''}
+                </div>` : ''}
+
+                ${v.ant && v.ant !== '-' ? `
+                <div style="color: #fbbf24; font-size: 13px; font-weight: bold; margin-bottom: 12px;">
+                    ⚔️ Gegenteil: <span style="color: #fde047; margin-left: 4px; font-size: 14px;">${v.ant}</span>
+                    <span onclick="event.stopPropagation(); speakGerman('${v.ant.replace(/'/g, "\\'")}')" style="cursor:pointer; margin-left: 4px;">🔊</span>
+                </div>` : ''}
+
+                <div style="background: rgba(0,0,0,0.3); padding: 12px; border-radius: 10px;">
+                    ${v.b1_ex && v.b1_ex !== '-' ? `
+                    <div style="margin-bottom: ${v.b2_ex && v.b2_ex !== '-' ? '10px' : '0'}; padding-bottom: ${v.b2_ex && v.b2_ex !== '-' ? '10px' : '0'}; border-bottom: ${v.b2_ex && v.b2_ex !== '-' ? '1px dashed rgba(255,255,255,0.1)' : 'none'};">
+                        <div style="color: #f8fafc; font-size: 13.5px; margin-bottom: 3px;">
+                            <b>B1:</b> ${v.b1_ex}
+                            <span onclick="event.stopPropagation(); speakGerman('${v.b1_ex.replace(/'/g, "\\'")}')" style="cursor:pointer; margin-left: 4px;">🔊</span>
+                        </div>
+                        ${!isNurDeutsch ? `<div style="color: #94a3b8; font-size: 12.5px; font-style: italic;">${v.vn_b1 || ''}</div>` : ''}
+                    </div>` : ''}
+                    
+                    ${v.b2_ex && v.b2_ex !== '-' ? `
+                    <div>
+                        <div style="color: #f8fafc; font-size: 13.5px; margin-bottom: 3px;">
+                            <b>B2:</b> ${v.b2_ex}
+                            <span onclick="event.stopPropagation(); speakGerman('${v.b2_ex.replace(/'/g, "\\'")}')" style="cursor:pointer; margin-left: 4px;">🔊</span>
+                        </div>
+                        ${!isNurDeutsch ? `<div style="color: #94a3b8; font-size: 12.5px; font-style: italic;">${v.vn_b2 || ''}</div>` : ''}
+                    </div>` : ''}
+                </div>
+            </div>
+        `).join('');
+    }
+    document.getElementById('vocab-table-modal').classList.remove('hidden');
+}
+
+    function selectFehler() {
+        currentLek = 'fehler';
+        localStorage.setItem('b2_last_lek', 'fehler');
+        renderLektionButtons();
+        renderList();
     }
 
     function backToMenu() {
@@ -107787,34 +108082,61 @@ function getMaxStreak(v) {
         renderList(); 
     }
 
-    function restartLastSession() { startSession(lastMode || 'normal'); }
+    function restartLastSession() {
+        startSession(lastMode || 'normal');
+    }
 
     function openGuide(isManualClick = false) {
         document.getElementById('guide-modal').classList.remove('hidden');
+        const checkboxContainer = document.getElementById('dont-show-again-container');
+        if (isManualClick) {
+            checkboxContainer.classList.add('hidden');
+        } else {
+            checkboxContainer.classList.remove('hidden');
+        }
     }
     
-    function closeGuide() { document.getElementById('guide-modal').classList.add('hidden'); }
+    function closeGuide() {
+        document.getElementById('guide-modal').classList.add('hidden');
+    }
 
-    function handleCloseGuideButton() { closeGuide(); }
+    function handleCloseGuideButton() {
+        const check = document.getElementById('dont-show-guide-checkbox');
+        if (check && check.checked) {
+            localStorage.setItem('b2_hide_guide_welcome', 'true');
+        }
+        closeGuide();
+    }
 
     function toggleTypingGuide() {
         const box = document.getElementById('typing-guide-box');
-        box.classList.toggle('hidden');
+        if (box.classList.contains('hidden')) {
+            box.classList.remove('hidden');
+        } else {
+            box.classList.add('hidden');
+        }
     }
 
+    // TÍNH NĂNG QUẢN LÝ SKIP
     function skipCurrentWord() {
         if (idx >= session.length || isTransitioning) return;
         const v = session[idx];
+        
         if (!mastery[v.word]) mastery[v.word] = { s: 0, w: 0, a: true };
         mastery[v.word].skipped = true; 
         save(); 
 
         const input = document.getElementById('ans-input');
         input.value = "⏭️ Đã bỏ qua từ này...";
+        input.style.background = "rgba(255, 255, 255, 0.08)";
         isTransitioning = true;
 
         setTimeout(() => {
-            idx++; currentStep = 1; penaltyMode = false; penaltyCount = 0; isTransitioning = false;
+            idx++;
+            currentStep = 1;
+            penaltyMode = false;
+            penaltyCount = 0;
+            isTransitioning = false;
             showWord();
         }, 600);
     }
@@ -107824,24 +108146,26 @@ function getMaxStreak(v) {
         document.getElementById('skipped-modal').classList.remove('hidden');
     }
 
-    function closeSkippedModal() { document.getElementById('skipped-modal').classList.add('hidden'); }
+    function closeSkippedModal() {
+        document.getElementById('skipped-modal').classList.add('hidden');
+    }
 
     function renderSkippedList() {
         const container = document.getElementById('skipped-list-content');
         const skippedWords = data.filter(v => mastery[v.word] && mastery[v.word].skipped);
 
         if (skippedWords.length === 0) {
-            container.innerHTML = '<div style="text-align:center; color:#94a3b8; padding: 20px;">Bạn chưa bỏ qua từ nào.</div>';
+            container.innerHTML = '<div style="text-align:center; color:#94a3b8; padding: 20px; font-weight: 700;">Bạn chưa bỏ qua từ nào.</div>';
             return;
         }
 
         container.innerHTML = skippedWords.map(v => `
             <div style="display:flex; justify-content:space-between; align-items:center; padding: 12px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 8px;">
                 <div>
-                    <div style="color: #fff; font-weight: 800;">${v.word}</div>
-                    <div style="color: #94a3b8; font-size: 12px;">${v.ans}</div>
+                    <div style="color: #fff; font-weight: 800; font-size: 15px;">${v.word}</div>
+                    <div style="color: #94a3b8; font-size: 12px; font-weight: 600;">${v.ans}</div>
                 </div>
-                <button onclick="restoreSkippedWord('${v.word.replace(/'/g, "\\'")}')" style="background: rgba(52, 211, 153, 0.12); border: 1px solid rgba(52, 211, 153, 0.4); color: var(--success); padding: 6px 12px; border-radius: 8px; font-size: 12px; cursor: pointer;">Khôi phục</button>
+                <button onclick="restoreSkippedWord('${v.word.replace(/'/g, "\\'")}')" style="background: rgba(52, 211, 153, 0.12); border: 1px solid rgba(52, 211, 153, 0.4); color: var(--success); padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Khôi phục</button>
             </div>
         `).join('');
     }
@@ -107854,20 +108178,45 @@ function getMaxStreak(v) {
         }
     }
 
+    const loadVoices = () => {
+        return new Promise((resolve) => {
+            let voices = window.speechSynthesis.getVoices();
+            if (voices.length !== 0) resolve(voices);
+            else {
+                window.speechSynthesis.onvoiceschanged = () => {
+                    voices = window.speechSynthesis.getVoices();
+                    resolve(voices);
+                };
+            }
+        });
+    };
+    loadVoices().then(voices => console.log("Voices loaded successfully!"));
+
     function speakGerman(text) {
         if (!text) return;
-        let cleanText = text.trim()
+        
+        let cleanText = text.trim();
+
+        cleanText = cleanText
             .replace(/\+\s*(jmdm\.|jmdn\.|jmd\.|etw\.|etwas)\s*\((Da|Akk|D|A|Dat)\)/gi, (match, obj, kasus) => {
-                let k = /Da|D|Dat/i.test(kasus) ? "Dativ" : "Akkusativ";
-                let o = obj.includes('jmdm') ? "jemandem" : obj.includes('jmdn') ? "jemanden" : "etwas";
+                let k = /Da|D|Dat/i.test(kasus) ? "Dativ" : /Gen|G/i.test(kasus) ? "Genitiv" : "Akkusativ";
+                let o = obj.includes('jmdm') ? "jemandem" : obj.includes('jmdn') ? "jemanden" : obj.includes('jmd') ? "jemand" : "etwas";
                 return `plus ${k} ${o}`;
             })
             .replace(/\bDa\b|\bDat\b|\bD\b/g, "Dativ")
             .replace(/\bAkk\b|\bA\b/g, "Akkusativ")
-            .replace(/\bjmdm\b/gi, "jemandem").replace(/\bjmdn\b/gi, "jemanden").replace(/\betw\b/gi, "etwas");
+            .replace(/\bGen\b|\bG\b/g, "Genitiv") 
+            .replace(/\bjmdm\b/gi, "jemandem").replace(/\bjmdn\b/gi, "jemanden").replace(/\betw\b/gi, "etwas")
+            .replace(/\b(r|r\.)\/(e|e\.)\s+(\w+)/g, "der $3, die $3")
+            .replace(/\br\.\s/g, "der ").replace(/\be\.\s/g, "die ").replace(/\bs\.\s/g, "das ");
 
         let voices = window.speechSynthesis.getVoices();
-        let selectedVoice = voices.find(v => v.lang.startsWith("de"));
+        let stefanVoice = voices.find(v => v.name.includes("Stefan") && v.lang.startsWith("de"));
+        let defaultGermanMale = voices.find(v => v.lang.startsWith("de") && v.name.toLowerCase().includes("male"));
+        let anyGermanVoice = voices.find(v => v.lang.startsWith("de"));
+
+        let selectedVoice = stefanVoice || defaultGermanMale || anyGermanVoice;
+
         window.speechSynthesis.cancel();
 
         if (selectedVoice) {
@@ -107881,27 +108230,164 @@ function getMaxStreak(v) {
         }
     }
 
+    function exportData() {
+        const dataStr = JSON.stringify(mastery);
+        const blob = new Blob([dataStr], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        const date = new Date();
+        const dateString = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`;
+        a.download = `Streak_B2_Backup_${dateString}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    function importData() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.txt';
+        
+        input.onchange = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const content = e.target.result;
+                    const parsed = JSON.parse(content);
+
+                    if (parsed && typeof parsed === 'object') {
+                        Object.keys(parsed).forEach(key => {
+                            if (mastery[key]) {
+                                mastery[key].s = parsed[key].s ?? mastery[key].s;
+                                mastery[key].w = parsed[key].w ?? mastery[key].w;
+                                mastery[key].a = parsed[key].a ?? mastery[key].a;
+                                mastery[key].skipped = parsed[key].skipped ?? mastery[key].skipped;
+                            } else {
+                                mastery[key] = parsed[key];
+                            }
+                        });
+
+                        save();
+                    }
+
+                    alert("✅ Phục hồi dữ liệu thành công! Trang sẽ tải lại.");
+                    location.reload();
+
+                } catch(err) {
+                    alert("❌ File backup không hợp lệ hoặc bị lỗi. Vui lòng kiểm tra lại file.");
+                    console.error(err);
+                }
+            };
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    function checkAndResetLifelines() {
+        const now = new Date();
+        const resetToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 2, 0, 0, 0));
+        
+        let targetResetTimestamp = "";
+        if (now.getTime() >= resetToday.getTime()) {
+            targetResetTimestamp = resetToday.toISOString().split('T')[0];
+        } else {
+            const yesterday = new Date(resetToday.getTime() - 24 * 60 * 60 * 1000);
+            targetResetTimestamp = yesterday.toISOString().split('T')[0];
+        }
+
+        const storedResetKey = localStorage.getItem('b2_lifeline_reset_v2') || "";
+        
+        if (storedResetKey !== targetResetTimestamp) {
+            lifelines = 1; 
+            localStorage.setItem('b2_lifelines_count', lifelines);
+            localStorage.setItem('b2_mastered_words_counter', '0'); 
+            localStorage.setItem('b2_lifeline_reset_v2', targetResetTimestamp);
+        } else {
+            const count = localStorage.getItem('b2_lifelines_count');
+            lifelines = count !== null ? parseInt(count) : 1;
+        }
+        
+        updateLifelineUI();
+    }
+
+    function updateLifelineUI() {
+        const iconContainer = document.getElementById('quiz-lifelines-icons');
+        if (iconContainer) {
+            if (lifelines <= 0) {
+                iconContainer.innerHTML = `<span style="color: var(--danger);">🛟 x 0</span>`;
+                iconContainer.style.borderColor = 'rgba(248, 113, 113, 0.3)';
+            } else {
+                iconContainer.innerHTML = `🛟 x ${lifelines}`;
+                iconContainer.style.borderColor = 'rgba(96, 165, 250, 0.3)';
+            }
+        }
+    }
+
+    function useOneLifeline() {
+        if (lifelines > 0 && isOfferingLifeline) {
+            lifelines--;
+            localStorage.setItem('b2_lifelines_count', lifelines);
+            
+            isOfferingLifeline = false; 
+            document.getElementById('quiz-lifelines-icons').classList.remove('glow-warning');
+            updateLifelineUI();
+            
+            const checkBtn = document.getElementById('check-btn');
+            checkBtn.innerHTML = "Checken";
+            checkBtn.style.background = "linear-gradient(135deg, #6d28d9, #a21caf)";
+            checkBtn.style.color = "white";
+            
+            penaltyMode = false; 
+            penaltyCount = 0; 
+            
+            const v = session[idx];
+            const target = currentStep === 1 ? v.word : v.ans;
+            
+            const inputField = document.getElementById('ans-input');
+            inputField.value = "";
+            inputField.placeholder = "Gõ lại đáp án: " + target;
+            inputField.style.background = "rgba(192, 132, 252, 0.25)"; 
+            
+            document.getElementById('fb').innerHTML = `
+                <div style="background: rgba(52, 211, 153, 0.15); border: 1px solid var(--success); padding: 12px; border-radius: 12px; margin-top: 5px;">
+                    <span style="color: var(--success); font-weight: bold; font-size: 14px;">🛟 Đã cứu Streak!</span><br>
+                    <span style="color: #f8fafc; font-size: 13px;">Hãy nhìn đáp án dưới đây và gõ lại đúng 1 lần:</span><br>
+                    <b style="color: #fff; font-size: 18px; display: inline-block; margin-top: 5px;">${target}</b>
+                </div>`;
+            updateDots();
+            setTimeout(() => inputField.focus(), 50);
+        }
+    }
+
     function startSession(mode = 'normal') {
         lastMode = mode;
         localStorage.setItem('b2_last_mode', mode);
+
         isAdvancedMode = (currentLek === 'advanced');
         isMixedMode = (mode === 'mixed' || mode === 'quick');
         isNoStreakMode = (mode === 'quick');
 
         let availablePool = [];
+
         if (mode === 'saved') {
             availablePool = data.filter(v => mastery[v.word] && mastery[v.word].saved && !mastery[v.word].skipped);
             if (availablePool.length === 0) {
-                showCustomAlert("Bạn chưa lưu từ vựng nào!", "Danh sách rỗng", "💛");
+                showCustomAlert("Bạn chưa lưu từ vựng nào. Hãy bấm biểu tượng 🤍 khi học để thêm vào danh sách!", "Danh sách rỗng", "💛");
                 return;
             }
         } else if (isMixedMode) {
             availablePool = data.filter(v => {
                 if (v.level !== currentLevel || !isMatchGroup(v)) return false;
-                return isMatchLek(v, currentLek) && mastery[v.word] && mastery[v.word].a && mastery[v.word].s >= getMaxStreak(v) && !mastery[v.word].skipped;
+                const matchTab = isMatchLek(v, currentLek);
+                return matchTab && mastery[v.word] && mastery[v.word].a && mastery[v.word].s >= getMaxStreak(v) && !mastery[v.word].skipped;
             });
             if (availablePool.length === 0) {
-                showCustomAlert("Bạn chưa có từ nào đạt đủ Streak để test!", "Chưa đủ điều kiện", "🔒");
+                showCustomAlert("Bạn chưa có từ nào ở cấp độ, nhóm và phần này đạt đủ Streak để làm bài test!", "Chưa đủ điều kiện", "🔒");
                 return;
             }
         } else {
@@ -107911,17 +108397,29 @@ function getMaxStreak(v) {
                 return isMatchLek(v, currentLek) && mastery[v.word].a && mastery[v.word].s < getMaxStreak(v) && !mastery[v.word].skipped;
             });
             if (availablePool.length === 0) {
-                showCustomAlert("Bạn đã học thuộc hết các từ vựng này!", "Hoàn thành", "🎉");
+                showCustomAlert("Chúc mừng! Bạn đã học thuộc hết các từ vựng đang chọn ở cấp độ, nhóm & bài học này!", "Hoàn thành", "🎉");
                 return;
             }
         }
 
         if (isMixedMode) {
-            availablePool.sort((a, b) => (mastery[a.word]?.s || 0) - (mastery[b.word]?.s || 0));
-            session = availablePool.slice(0, 15).sort(() => Math.random() - 0.5);
+            availablePool.sort((a, b) => {
+                let scoreA = mastery[a.word]?.s || 0;
+                let scoreB = mastery[b.word]?.s || 0;
+                if (scoreA !== scoreB) return scoreA - scoreB;
+                return Math.random() - 0.5;
+            });
+            session = availablePool.slice(0, 15);
+            session.sort(() => Math.random() - 0.5);
         } else if (mode === 'saved') {
-            availablePool.sort((a, b) => (mastery[a.word]?.s || 0) - (mastery[b.word]?.s || 0));
-            session = availablePool.slice(0, 5).sort(() => Math.random() - 0.5);
+            availablePool.sort((a, b) => {
+                let scoreA = mastery[a.word]?.s || 0;
+                let scoreB = mastery[b.word]?.s || 0;
+                if (scoreA !== scoreB) return scoreA - scoreB;
+                return Math.random() - 0.5;
+            });
+            session = availablePool.slice(0, 5); 
+            session.sort(() => Math.random() - 0.5); 
         } else {
             session = availablePool.slice(0, 5).sort(() => Math.random() - 0.5);
         }
@@ -107932,7 +108430,10 @@ function getMaxStreak(v) {
         document.getElementById('menu-screen').classList.add('hidden');
         document.getElementById('finish-screen').classList.add('hidden');
         document.getElementById('quiz-screen').classList.remove('hidden');
+        document.getElementById('typing-guide-box').classList.add('hidden');
+        document.getElementById('quiz-lifelines-icons').classList.remove('glow-warning');
         
+        checkAndResetLifelines(); 
         renderHeat();
         showWord();
     }
@@ -107941,54 +108442,98 @@ function getMaxStreak(v) {
         if (!text) return "";
         return text.toLowerCase()
             .replace(/\b(r\s*\/?\s*e|e\s*\/?\s*r|r\.\s*\/?\s*e\.|e\.\s*\/?\s*r\.)\b/g, "der die")
-            .replace(/[.,\/()]/g, " ").replace(/\s+/g, ' ').trim()
-            .replace(/\betw\b/g, "etwas").replace(/\bjmdn\b/g, "jemanden").replace(/\bjmdm\b/g, "jemandem")
-            .replace(/\br\b/g, "der").replace(/\be\b/g, "die").replace(/\bs\b/g, "das")
-            .replace(/\b(d|da|dat)\b/g, "dativ").replace(/\b(a|akk)\b/g, "akkusativ");
+            .replace(/[.,\/()]/g, " ")
+            .replace(/\s+/g, ' ').trim()
+            .replace(/\betw\b/g, "etwas")
+            .replace(/\bjmdn\b/g, "jemanden")
+            .replace(/\bjmdm\b/g, "jemandem")
+            .replace(/\bjmd\b/g, "jemand")
+            .replace(/\br\b/g, "der")
+            .replace(/\be\b/g, "die")
+            .replace(/\bs\b/g, "das")
+            .replace(/\b(d|da|dat)\b/g, "dativ")
+            .replace(/\b(a|akk)\b/g, "akkusativ")
+            .replace(/\b(g|gen)\b/g, "genitiv")
+            .replace(/\b(nom)\b/g, "nominativ")
+            .replace(/\b(jemandem|jemanden|jemand)\s+(etwas)\b/g, "$2 $1");
     }
 
     function setFilter(type) {
         currentFilter = type;
-        ['all', 'high', 'normal'].forEach(t => {
-            const btn = document.getElementById(`filter-${t}`);
-            btn.style.background = (t === type) ? 'var(--warning-selected)' : 'rgba(255,255,255,0.03)';
-            btn.style.color = (t === type) ? '#ffffff' : '#94a3b8';
+        const btnAll = document.getElementById('filter-all');
+        const btnHigh = document.getElementById('filter-high');
+        const btnNormal = document.getElementById('filter-normal');
+
+        [btnAll, btnHigh, btnNormal].forEach(btn => {
+            btn.style.background = 'rgba(255,255,255,0.03)';
+            btn.style.color = '#94a3b8';
+            btn.style.fontWeight = 'normal';
+            btn.style.borderColor = 'var(--border)';
         });
+
+        const activeBtn = document.getElementById(`filter-${type}`);
+        activeBtn.style.background = 'var(--warning-selected)';
+        activeBtn.style.color = '#ffffff';
+        activeBtn.style.fontWeight = 'bold';
+        activeBtn.style.borderColor = 'var(--warning-selected)';
+
         renderList();
     }
 
     function init() {
         data.forEach(v => { 
-            if (mastery[v.word] === undefined) mastery[v.word] = { s: 0, w: 0, a: true };
+            if (mastery[v.word] === undefined) {
+                mastery[v.word] = { s: 0, w: 0, a: true }; 
+            }
         });
 
         const levelsInData = new Set(data.map(v => v.level).filter(Boolean));
-        availableLevels = Array.from(levelsInData).sort((a, b) => ALL_LEVELS.indexOf(a) - ALL_LEVELS.indexOf(b));
+        availableLevels = Array.from(levelsInData).sort((a, b) => {
+            let idxA = ALL_LEVELS.indexOf(a);
+            let idxB = ALL_LEVELS.indexOf(b);
+            if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+            if (idxA !== -1) return -1;
+            if (idxB !== -1) return 1;
+            return a.localeCompare(b);
+        });
 
         if (!availableLevels.includes(currentLevel) && availableLevels.length > 0) {
             currentLevel = availableLevels[0];
+            localStorage.setItem('b2_last_level', currentLevel);
         }
 
         renderLevelSelector();
         renderGroupSelector();
         renderLektionButtons(); 
+        
+        localStorage.setItem('b2_pro_v1', JSON.stringify(mastery));
         renderList();
         renderHeat();
+        checkAndResetLifelines(); 
         
-        // Tự động kiểm tra đồng bộ mây khi khởi chạy
+        // Tự động kết nối Mây khi tải xong trang
         setTimeout(checkUserPinAndSync, 500);
     }
 
     function renderList() {
-        const currentData = data.filter(v => v.level === currentLevel && isMatchGroup(v) && isMatchLek(v, currentLek))
-                                .filter(v => currentFilter === 'high' ? v.importance === 'high' : (currentFilter === 'normal' ? v.importance !== 'high' : true))
-                                .filter(v => !mastery[v.word]?.skipped);
+        const currentData = data.filter(v => {
+            if (v.level !== currentLevel || !isMatchGroup(v)) return false;
+            return isMatchLek(v, currentLek);
+        }).filter(v => {
+            if (currentFilter === 'high') return v.importance === 'high';
+            if (currentFilter === 'normal') return v.importance !== 'high';
+            return true;
+        }).filter(v => !mastery[v.word]?.skipped);
 
-        currentData.forEach(v => { if (!mastery[v.word]) mastery[v.word] = { s: 0, w: 0, a: true }; });
+        currentData.forEach(v => {
+            if (!mastery[v.word]) mastery[v.word] = { s: 0, w: 0, a: true };
+        });
         
         const masteredCount = currentData.filter(v => mastery[v.word] && mastery[v.word].s >= getMaxStreak(v)).length;
         const statsEl = document.getElementById('lek-stats');
-        if(statsEl) statsEl.innerText = `${masteredCount}/${currentData.length} 🔥`;
+        if(statsEl) {
+            statsEl.innerText = `${masteredCount}/${currentData.length} 🔥`;
+        }
 
         if (currentData.length === 0) {
             document.getElementById('vocab-list').innerHTML = `<div style="padding:15px; text-align:center; color:#94a3b8; font-size:13px;">Chưa có từ vựng nào ở mục này.</div>`;
@@ -108000,12 +108545,17 @@ function getMaxStreak(v) {
                 <div style="display:flex; align-items:center; flex: 1;">
                     <input type="checkbox" ${mastery[v.word].a?'checked':''} onchange="mastery['${v.word}'].a=this.checked; save();" style="cursor:pointer; transform: scale(1.2);">
                     <div style="margin-left:14px">
-                        <div style="font-size:14px; font-weight:600; color:var(--text);">
-                            ${v.word} <span style="font-size: 11px; color: #94a3b8; font-style: italic;">(${v.ans})</span>
+                        <div style="font-size:14px; font-weight:600; color:var(--text); line-height: 1.2;">
+                            ${v.word} ${v.importance === 'high' ? '<span style="font-size: 11px; margin-left: 2px;">⭐</span>' : ''}
+                            <span style="font-size: 11px; color: #94a3b8; font-weight: 400; margin-left: 6px; font-style: italic;">(${v.ans})</span>
                         </div>
+                        ${!isNurDeutsch ? `<div style="font-size:11px; color:rgba(248, 250, 252, 0.5); margin-top: 2px;">${v.vnans}</div>` : ''}
                     </div>
                 </div>
-                <span style="font-size:11px; font-weight:bold; color:var(--success)">🔥 ${mastery[v.word].s}/${getMaxStreak(v)}</span>
+                ${(() => {
+                    const maxStreak = getMaxStreak(v);
+                    return `<span style="font-size:11px; font-weight:bold; color:var(--success)">🔥 ${mastery[v.word].s}/${maxStreak}</span>`;
+                })()}
             </div>
         `).join('');
     }
@@ -108014,27 +108564,88 @@ function getMaxStreak(v) {
         if (idx >= session.length) {
             document.getElementById('quiz-screen').classList.add('hidden');
             document.getElementById('finish-screen').classList.remove('hidden');
-            document.getElementById('finish-msg').innerText = "Đã hoàn thành lượt ôn tập này.";
+            
+            if (isMixedMode) {
+                document.getElementById('finish-msg').innerText = "Tuyệt vời! Bạn đã hoàn thành bài Test 15 từ vựng (10 từ theo thứ tự + 5 từ ngẫu nhiên).";
+            } else {
+                document.getElementById('finish-msg').innerText = "Đã hoàn thành lượt ôn tập 5 từ vựng.";
+            }
             return;
         }
 
         const v = session[idx];
         const inputField = document.getElementById('ans-input');
         if (currentStep !== 1 && currentStep !== 2) currentStep = 1;
+        
+        isOfferingLifeline = false; 
+        document.getElementById('quiz-lifelines-icons').classList.remove('glow-warning');
 
+        const checkBtn = document.getElementById('check-btn');
+        if (checkBtn) {
+            checkBtn.innerHTML = "Checken";
+            checkBtn.style.background = "linear-gradient(135deg, #6d28d9, #a21caf)";
+            checkBtn.style.color = "white";
+        }
+
+        let fullType = (v.type || "Wort").replace(/\bAdj\.?\b/gi, "Adjektiv").replace(/\bAdv\.?\b/gi, "Adverb");
+        if (v.group) {
+            fullType += ` (${v.group})`;
+        }
         const stepText = currentStep === 1 ? "SCHRITT 1: WORT" : "SCHRITT 2: STRUKTUR";
         const currentVN = currentStep === 1 ? v.vnword : v.vnans;
 
-        document.getElementById('q-type').innerHTML = `Wort ${idx + 1}/${session.length} | ${stepText}`;
-        document.getElementById('q-vn').innerText = currentVN;
+        let quickModeTag = isNoStreakMode ? `<span style="color: #34d399;">⚡ Schnell</span> | ` : "";
+
+        document.getElementById('q-type').innerHTML = `${quickModeTag}Wort ${idx + 1}/${session.length} | <span style="color: #fde047;">${fullType}</span> | ${stepText}`;
+        document.getElementById('q-vn').innerText = isNurDeutsch ? (currentStep === 1 ? (v.forms || v.word) : v.word) : currentVN;
         document.getElementById('fb').innerHTML = ""; 
+        
+        document.getElementById('fb-center-synonym').style.display = 'none';
+        document.getElementById('fb-center-antonym').style.display = 'none';
+        document.getElementById('left-col').style.visibility = 'hidden';
         
         inputField.value = "";
         inputField.placeholder = currentStep === 1 ? "Gõ từ gốc..." : "Gõ cụm từ đầy đủ...";
         inputField.style.background = "rgba(0,0,0,0.25)";
         
-        updateSaveButtonUI();
+        updateLifelineUI();
+        updateDots();
+        updateSaveButtonUI(); 
         setTimeout(() => inputField.focus(), 50);
+    }
+
+    function updateDots() {
+        const v = session[idx];
+        const dotsContainer = document.getElementById('dots');
+        
+        let dotsHtml = '';
+        if (penaltyMode) {
+            dotsHtml = `
+                <div style="display: flex; gap: 8px;">
+                    ${[1,2,3].map(i => `<div class="dot ${penaltyCount >= i ? 'active' : ''}" style="${penaltyCount >= i ? 'background:var(--danger); box-shadow: 0 0 10px var(--danger);' : ''}"></div>`).join('')}
+                </div>
+                <div style="font-size: 10px; color: var(--danger); font-weight: bold; margin-top: 5px;">BITTE CẨN THẬN!</div>
+            `;
+        } else {
+            const maxS = getMaxStreak(v);
+            const streakArr = Array.from({ length: maxS }, (_, i) => i + 1);
+
+            dotsHtml = `
+                <div style="display: flex; gap: 4px; margin-bottom: 5px;">
+                    ${streakArr.map(i => `
+                        <div class="dot ${(mastery[v.word]?.s || 0) >= i ? 'active' : ''}" 
+                             style="width: 6px; height: 6px; ${(mastery[v.word]?.s || 0) >= i ? 'background: #fbbf24; box-shadow: 0 0 8px #fbbf24;' : ''}">
+                        </div>`).join('')}
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div class="dot ${currentStep >= 1 ? 'active' : ''}" style="width: 8px; height: 8px; border: 1px solid var(--primary);" title="Bước 1"></div>
+                    <div style="width: 15px; height: 1px; background: var(--border);"></div>
+                    <div class="dot ${currentStep >= 2 ? 'active' : ''}" style="width: 8px; height: 8px; border: 1px solid var(--primary);" title="Bước 2"></div>
+                </div>
+            `;
+        }
+
+        dotsContainer.innerHTML = dotsHtml;
     }
 
     function processCheck() {
@@ -108042,53 +108653,365 @@ function getMaxStreak(v) {
 
         const input = document.getElementById('ans-input');
         const v = session[idx];
+        
         const target = currentStep === 1 ? v.word : v.ans;
         const correct = normalizeGerman(input.value) === normalizeGerman(target);
 
-        if (correct) {
-            speakGerman(target);
-            input.style.background = "var(--success)";
-            isTransitioning = true; 
+        if (isOfferingLifeline) {
+            isOfferingLifeline = false;
+            document.getElementById('quiz-lifelines-icons').classList.remove('glow-warning');
+            
+            const checkBtn = document.getElementById('check-btn');
+            checkBtn.innerHTML = "Checken";
+            checkBtn.style.background = "linear-gradient(135deg, #6d28d9, #a21caf)";
+            checkBtn.style.color = "white";
 
-            if (currentStep === 1) {
-                setTimeout(() => { currentStep = 2; isTransitioning = false; showWord(); }, 150);
-            } else {
-                if (!isNoStreakMode) { 
-                    if (!mastery[v.word]) mastery[v.word] = { s: 0, w: 0, a: true };
-                    mastery[v.word].s++; 
-                    save(); 
-                }
-                setTimeout(() => { currentStep = 1; idx++; isTransitioning = false; showWord(); }, 150); 
-            }
-        } else {
-            speakGerman(target);
             if (!mastery[v.word]) mastery[v.word] = { s: 0, w: 0, a: true };
             mastery[v.word].s = 0;
             mastery[v.word].w = (mastery[v.word].w || 0) + 1;
-            save(); 
+            save(); renderHeat();
+            penaltyMode = true; 
             
-            input.style.background = "rgba(248, 113, 113, 0.2)";
-            document.getElementById('fb').innerHTML = `<div style="color:var(--danger); font-size:13px; margin-top:10px;">⚠️ Đán án đúng: <b>${target}</b></div>`;
+            if (correct) {
+                penaltyCount = 1;
+                speakGerman(target);
+                input.style.background = "var(--success)";
+                setTimeout(() => {
+                    input.value = ""; 
+                    input.style.background = "rgba(248, 113, 113, 0.2)"; 
+                    updateDots();
+                }, 300);
+            } else {
+                penaltyCount = 0;
+                input.style.background = "rgba(248, 113, 113, 0.2)";
+            }
+            
+            updateDots(); showDetailFeedback(v, false);
+            return; 
+        }
+
+        if (!correct && !penaltyMode) {
+            const removeKasusAndPronouns = (str) => normalizeGerman(str).replace(/\b(nominativ|akkusativ|dativ|genitiv|jemanden|jemandem|jemand|etwas)\b/gi, '').replace(/\s+/g, ' ').trim();
+            if (removeKasusAndPronouns(input.value) === removeKasusAndPronouns(target) && removeKasusAndPronouns(target) !== "") {
+                input.style.background = "rgba(251, 191, 36, 0.3)"; 
+                
+                let missingComponents = [];
+                const normInput = normalizeGerman(input.value);
+                const normTarget = normalizeGerman(target);
+                
+                if (normTarget.includes("etwas") && !normInput.includes("etwas")) missingComponents.push("etw/etwas");
+                if (normTarget.includes("jemanden") && !normInput.includes("jemanden")) missingComponents.push("jmdn");
+                if (normTarget.includes("jemandem") && !normInput.includes("jemandem")) missingComponents.push("jmdm");
+                if (normTarget.includes("jemand") && !normInput.includes("jemand") && !normInput.includes("jemanden") && !normInput.includes("jemandem")) missingComponents.push("jmd");
+                if (normTarget.includes("akkusativ") && !normInput.includes("akkusativ")) missingComponents.push("Akk");
+                if (normTarget.includes("dativ") && !normInput.includes("dativ")) missingComponents.push("Dat");
+                if (normTarget.includes("nominativ") && !normInput.includes("nominativ")) missingComponents.push("Nom");
+                if (normTarget.includes("genitiv") && !normInput.includes("genitiv")) missingComponents.push("Gen");
+                
+                let missingHintText = missingComponents.length > 0 ? ` (Fehlt: ${missingComponents.join(", ")})` : "";
+
+                document.getElementById('fb').innerHTML = `
+                    <div style="color: #fbbf24; font-weight: bold; margin-top: 10px;">
+                        ⚠️ Fast richtig! Dir fehlt nur der Kasus (Nom, Akk, Dat, Gen...) oder ein Pronomen (jmd, etw...)${missingHintText}.<br>
+                        <span style="font-size: 12px; opacity: 0.8;">Tipp: ${target}</span>
+                    </div>`;
+                return; 
+            }
+        }
+
+        if (!correct && currentStep === 1 && (v.type||"").toLowerCase().includes("nomen") && !penaltyMode) {
+            const parts = target.split(',');
+            if (parts.length > 1) {
+                if (normalizeGerman(input.value) === normalizeGerman(parts[0])) {
+                    input.style.background = "rgba(251, 191, 36, 0.3)"; 
+                    document.getElementById('fb').innerHTML = `
+                        <div style="color: #fbbf24; font-weight: bold; margin-top: 10px;">
+                            ⚠️ Plural fehlt! Bitte Komma und Pluralendung hinzufügen.<br><span style="font-size: 12px; opacity: 0.8;">Tipp: ${target}</span>
+                        </div>`;
+                    return; 
+                }
+            }
+        }
+
+        if (correct) {
+            speakGerman(target);
+            if (penaltyMode) {
+                if (++penaltyCount >= 3) {
+                    penaltyMode = false; penaltyCount = 0;
+                    input.style.background = "var(--success)";
+                    isTransitioning = true; 
+                    setTimeout(() => {
+                        if (currentStep === 1) { currentStep = 2; showWord(); } else { currentStep = 1; idx++; showWord(); }
+                        isTransitioning = false; 
+                    }, 200); 
+                } else {
+                    input.style.background = "var(--success)";
+                    setTimeout(() => {
+                        input.value = ""; input.style.background = "rgba(248, 113, 113, 0.2)"; updateDots();
+                    }, 300);
+                }
+            } else {
+                input.style.background = "var(--success)";
+                isTransitioning = true; 
+                if (currentStep === 1) {
+                    setTimeout(() => { currentStep = 2; isTransitioning = false; showWord(); }, 150);
+                } else {
+                    if (!isNoStreakMode) { 
+                        let justMastered = false;
+                        if (!mastery[v.word]) mastery[v.word] = { s: 0, w: 0, a: true };
+
+                        if (isMixedMode) { 
+                            mastery[v.word].s = 4; 
+                        } else { 
+                            mastery[v.word].s++; 
+                            if (mastery[v.word].s >= getMaxStreak(v)) {
+                                justMastered = true;
+                            }
+                        }
+                        save(); renderHeat();
+
+                        if (justMastered) {
+                            let pCounter = parseInt(localStorage.getItem('b2_mastered_words_counter') || '0');
+                            pCounter++;
+                            if (pCounter >= 3) { 
+                                pCounter = 0;
+                                if (lifelines < 7) {
+                                    lifelines++;
+                                    localStorage.setItem('b2_lifelines_count', lifelines);
+                                    updateLifelineUI();
+                                }
+                            }
+                            localStorage.setItem('b2_mastered_words_counter', pCounter);
+                        }
+                    }
+                    setTimeout(() => { currentStep = 1; idx++; isTransitioning = false; showWord(); }, 150); 
+                }
+            }
+        } else {
+            speakGerman(target);
+            if (isNoStreakMode) {
+                input.style.background = "rgba(248, 113, 113, 0.2)";
+                showDetailFeedback(v, false);
+                isWaitingForNext = true; 
+            } else {
+                if (!penaltyMode && lifelines > 0) {
+                    isOfferingLifeline = true; 
+                    
+                    const checkBtn = document.getElementById('check-btn');
+                    checkBtn.innerHTML = "Chấp nhận sai (Enter)";
+                    checkBtn.style.background = "rgba(255, 255, 255, 0.08)";
+                    checkBtn.style.color = "#cbd5e1";
+                    
+                    document.getElementById('quiz-lifelines-icons').classList.add('glow-warning');
+                    
+                    input.style.background = "rgba(251, 146, 60, 0.2)";
+                    showDetailFeedback(v, false, true); 
+                    return;
+                }
+
+                if (!penaltyMode) {
+                    if (!mastery[v.word]) mastery[v.word] = { s: 0, w: 0, a: true };
+                    mastery[v.word].s = 0;
+                    mastery[v.word].w = (mastery[v.word].w || 0) + 1;
+                    save(); renderHeat();
+                    penaltyMode = true; penaltyCount = 0; 
+                } else { penaltyCount = 0; }
+                input.style.background = "rgba(248, 113, 113, 0.2)";
+                updateDots(); showDetailFeedback(v, false);
+            }
         }
     }
 
     function toggleHeatDetail(index) {
         const detailDiv = document.getElementById(`heat-detail-${index}`);
-        detailDiv.classList.toggle('hidden');
+        const btn = document.getElementById(`heat-btn-${index}`);
+        if (detailDiv.classList.contains('hidden')) {
+            detailDiv.classList.remove('hidden'); btn.innerText = '−'; btn.style.background = 'rgba(255,255,255,0.1)';
+        } else {
+            detailDiv.classList.add('hidden'); btn.innerText = '+'; btn.style.background = 'none';
+        }
     }
 
+    function showDetailFeedback(v, isCorrect, offerLifeline = false) {
+    const centerMain = document.getElementById('fb');
+    const centerSyn = document.getElementById('fb-center-synonym');
+    const centerAnt = document.getElementById('fb-center-antonym');
+    const leftColBox = document.getElementById('left-col');
+    const leftContent = document.getElementById('fb-left');
+    
+    centerSyn.style.display = 'none';
+    centerAnt.style.display = 'none';
+    leftColBox.style.visibility = 'hidden';
+    
+    const primaryDisplay = currentStep === 1 ? v.word : v.ans;
+    const secondaryDisplay = currentStep === 1 ? v.ans : v.word;
+
+    let warningText = "⚠️ Falsch! Bitte 3 Mal richtig eingeben!";
+    if (isNoStreakMode) {
+        warningText = "⚠️ Falsch! Bitte Eingabetaste drücken.";
+    }
+    if (offerLifeline && lifelines > 0) {
+        warningText = `⚠️ Falsch! Rettungsring 🛟 nutzen oder Eingabetaste drücken.`;
+    }
+
+    centerMain.innerHTML = `
+        <div style="cursor:default; padding:12px; background:rgba(255,255,255,0.05); border-radius:12px; text-align:left; border: 1px solid ${offerLifeline ? 'var(--warning)' : (isCorrect ? 'var(--success)' : 'var(--danger)')}">
+            <div style="display: flex; justify-content: space-between; gap: 15px;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 6px;">
+                    <div style="color:var(--primary); font-weight:700; font-size:16px;">
+                        🇩🇪 ${primaryDisplay} <span onclick="event.stopPropagation(); speakGerman('${primaryDisplay.replace(/'/g, "\\'")}')" style="cursor:pointer" title="Nghe tiếng Đức">🔊</span>
+                    </div>
+                    ${!isCorrect ? `<div style="font-size:14px; color:#f8fafc; font-weight: 500;">${secondaryDisplay} <span onclick="event.stopPropagation(); speakGerman('${secondaryDisplay.replace(/'/g, "\\'")}')" style="cursor:pointer" title="Nghe tiếng Đức">🔊</span></div>` : ''}
+                    <div style="font-size:11px; opacity:0.6; font-style: italic;">${v.forms || ''}</div>
+                </div>
+                
+                <div style="flex: 1; text-align: right; display: flex; flex-direction: column; gap: 6px;">
+                    ${!isNurDeutsch ? `
+                        <div style="font-size:14px; font-weight: 700; color:var(--success);">${v.vnword || ''}</div>
+                        <div style="font-size:13px; color:#e2e8f0; line-height: 1.4;">${v.vnans || ''}</div>
+                    ` : `
+                        <div style="font-size:13px; color:#e2e8f0; line-height: 1.4; font-style: italic;">${v.ans || ''}</div>
+                    `}
+                </div>
+            </div>
+            ${isCorrect ? `<p style="color:var(--success); font-size:11px; margin-top:10px; text-align:center;">✨ Richtig! ✨</p>` : ''}
+        </div>
+    `;
+
+    if (!isCorrect) {
+        if (v.giai_thich_dong_nghia) {
+            centerSyn.style.display = 'block';
+            centerSyn.innerHTML = `
+                <span style="font-size: 13px; color: #38bdf8; font-weight: bold; text-transform: uppercase;">Synonyme:</span>
+                <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+                    ${v.dong_nghia_b1 ? `
+                    <div style="background: rgba(0,0,0,0.2); padding: 10px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span style="font-size: 14px; color: #bae6fd; font-weight: bold;">B1:</span> 
+                            <b style="font-size: 19px; color: #ffffff; margin-left: 4px;">${v.dong_nghia_b1}</b>
+                        </div>
+                        <span onclick="event.stopPropagation(); speakGerman('${v.dong_nghia_b1.replace(/'/g, "\\'")}')" style="cursor:pointer; font-size: 16px;">🔊</span>
+                    </div>` : ''}
+                    
+                    ${v.dong_nghia_b2 ? `
+                    <div style="background: rgba(0,0,0,0.2); padding: 10px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span style="font-size: 14px; color: #bae6fd; font-weight: bold;">B2:</span> 
+                            <b style="font-size: 19px; color: #ffffff; margin-left: 4px;">${v.dong_nghia_b2}</b>
+                        </div>
+                        <span onclick="event.stopPropagation(); speakGerman('${v.dong_nghia_b2.replace(/'/g, "\\'")}')" style="cursor:pointer; font-size: 16px;">🔊</span>
+                    </div>` : ''}
+                </div>
+            `;
+        }
+
+        if (v.ant && v.ant !== "-") {
+            centerAnt.style.display = 'block';
+            centerAnt.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <span style="font-size: 13px; color: #fbbf24; font-weight: bold; text-transform: uppercase;">Gegenteil:</span><br>
+                        <b style="font-size: 20px; color: #fde047; letter-spacing: 0.5px; display: inline-block; margin-top: 6px;">${v.ant}</b>
+                    </div>
+                    <span onclick="event.stopPropagation(); speakGerman('${v.ant.replace(/'/g, "\\'")}')" style="cursor:pointer; font-size: 18px;">🔊</span>
+                </div>
+            `;
+        }
+
+        leftColBox.style.visibility = 'visible';
+        let leftHtml = "";
+        
+        if (v.giai_thich_dong_nghia && !isNurDeutsch) {
+            leftHtml += `<div style="font-size: 13.5px; color: #e0f2fe; opacity: 0.95; font-style: italic; margin-bottom: 8px; line-height: 1.4;">${v.giai_thich_dong_nghia}</div>`;
+        }
+
+        leftHtml += `
+            <div style="font-size:13px; border-top:1px solid var(--border); padding-top:8px; margin-bottom: 10px;">
+                ${v.b1_ex && v.b1_ex !== '-' ? `
+                <p style="margin:0 0 4px 0; color: #f8fafc; font-size: 14px;">
+                    <b>B1+:</b> ${v.b1_ex} 
+                    <span onclick="event.stopPropagation(); speakGerman('${v.b1_ex.replace(/'/g, "\\'")}')" style="cursor:pointer; margin-left: 4px;" title="Nghe câu B1">🔊</span>
+                </p>
+                ${!isNurDeutsch ? `<p style="margin:0 0 15px 0; font-size:13px; opacity:0.7; font-style: italic;">${v.vn_b1 || ''}</p>` : ''}
+                ` : ''}
+                
+                ${v.b2_ex && v.b2_ex !== '-' ? `
+                <p style="margin:0 0 4px 0; color: #f8fafc; font-size: 14px;">
+                    <b>B2:</b> ${v.b2_ex} 
+                    <span onclick="event.stopPropagation(); speakGerman('${v.b2_ex.replace(/'/g, "\\'")}')" style="cursor:pointer; margin-left: 4px;" title="Nghe câu B2">🔊</span>
+                </p>
+                ${!isNurDeutsch ? `<p style="margin:0 0 5px 0; font-size:13px; opacity:0.7; font-style: italic;">${v.vn_b2 || ''}</p>` : ''}
+                ` : ''}
+            </div>
+            <div style="color:${offerLifeline ? 'var(--warning)' : 'var(--danger)'}; font-size:13px; margin-top:auto; text-align:left; font-weight:bold; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; line-height: 1.4;">
+                ${warningText}
+            </div>
+        `;
+        leftContent.innerHTML = leftHtml;
+    }
+}
+
     window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
+    // XỬ LÝ PHÍM ESC (Thoát/Đóng)
+    if (e.key === 'Escape' || e.key === 'Esc') {
+        const alertModal = document.getElementById('custom-alert-modal');
+        const vocabModal = document.getElementById('vocab-table-modal');
+        const guideModal = document.getElementById('guide-modal');
+        const skippedModal = document.getElementById('skipped-modal');
+        const analyzerScreen = document.getElementById('analyzer-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const finishScreen = document.getElementById('finish-screen');
+
+        if (alertModal && !alertModal.classList.contains('hidden')) {
+            closeCustomAlert();
+        } else if (vocabModal && !vocabModal.classList.contains('hidden')) {
+            closeVocabTable();
+        } else if (guideModal && !guideModal.classList.contains('hidden')) {
+            closeGuide();
+        } else if (skippedModal && !skippedModal.classList.contains('hidden')) {
+            closeSkippedModal();
+        } else if (analyzerScreen && !analyzerScreen.classList.contains('hidden')) {
+            closeAnalyzer();
+        } else if (quizScreen && !quizScreen.classList.contains('hidden')) {
             backToMenu();
+        } else if (finishScreen && !finishScreen.classList.contains('hidden')) {
+            backToMenu();
+        }
+        return; 
+    }
+
+    // XỬ LÝ PHÍM ENTER (Nộp bài/Tiếp tục)
+    if (e.key === 'Enter') {
+        e.preventDefault(); 
+        const alertModal = document.getElementById('custom-alert-modal');
+        if (alertModal && !alertModal.classList.contains('hidden')) {
+            closeCustomAlert();
             return;
         }
-        if (e.key === 'Enter') {
-            e.preventDefault(); 
-            const quizScreen = document.getElementById('quiz-screen');
-            const input = document.getElementById('ans-input');
-            if (!quizScreen.classList.contains('hidden') && input && input.value.trim() !== "") {
-                processCheck();
+
+        if (isTransitioning) return; 
+
+        const menuScreen = document.getElementById('menu-screen');
+        const finishScreen = document.getElementById('finish-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const input = document.getElementById('ans-input');
+
+        if (!menuScreen.classList.contains('hidden')) { restartLastSession(); return; }
+        if (!finishScreen.classList.contains('hidden')) { restartLastSession(); return; }
+        
+        if (!quizScreen.classList.contains('hidden')) {
+            if (isOfferingLifeline) {
+                processCheck(); 
+                return;
             }
+
+            if (typeof isWaitingForNext !== 'undefined' && isWaitingForNext) {
+                isWaitingForNext = false;
+                if (currentStep === 1) { currentStep = 2; } else { currentStep = 1; idx++; }
+                showWord(); return;
+            }
+            if (input && input.value.trim() !== "") { processCheck(); }
+        }
         }
     });
 
@@ -108098,23 +109021,51 @@ function getMaxStreak(v) {
                           .sort((a,b) => (mastery[b.word]?.w || 0) - (mastery[a.word]?.w || 0));
         
         if (fails.length === 0) {
-            cloud.innerHTML = `<p style="text-align:center; font-size:12px; opacity:0.4">Chưa có dữ liệu heatmap.</p>`; return;
+            cloud.innerHTML = `<p style="text-align:center; font-size:12px; opacity:0.4">Chưa có dữ liệu heatmap cho mục này.</p>`; return;
         }
 
-        cloud.innerHTML = fails.map((v, index) => `
-            <div class="heat-item" style="padding: 12px; margin-bottom: 10px; flex-direction: column; align-items: stretch;">
-                <div style="display:flex; justify-content:space-between; align-items: center;">
-                    <div>
-                        <b style="color: var(--danger)">${v.word}</b>
-                        <span style="font-size: 11px; color: var(--danger); background: rgba(248, 113, 113, 0.2); padding: 2px 6px; border-radius: 4px; margin-left: 8px;">Fehler: ${mastery[v.word]?.w || 0}</span>
+        cloud.innerHTML = fails.map((v, index) => {
+            const failCount = mastery[v.word]?.w || 0;
+            const fontSize = Math.min(13 + failCount * 2, 22); 
+            const opacity = Math.min(0.3 + failCount * 0.15, 1);
+            return `
+                <div class="heat-item" style="border-left: 4px solid rgba(248, 113, 113, ${opacity}); background: rgba(248, 113, 113, 0.05); padding: 12px; margin-bottom: 10px; border-radius: 12px; flex-direction: column; align-items: stretch;">
+                    <div style="display:flex; justify-content:space-between; align-items: center; width: 100%;">
+                        <div>
+                            <b style="font-size: ${fontSize}px; color: var(--danger)">${v.word}</b>
+                            <span style="font-size: 11px; font-weight: bold; color: var(--danger); background: rgba(248, 113, 113, 0.2); padding: 2px 6px; border-radius: 4px; margin-left: 8px;">Fehler: ${failCount}</span>
+                        </div>
+                        <button id="heat-btn-${index}" onclick="toggleHeatDetail(${index})" style="background: none; border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; padding: 4px 12px; font-size: 16px; font-weight: bold;">+</button>
+                    </div>
+                    <div style="font-size: 13px; color: var(--primary); font-weight: 600; margin-top: 5px;">Struktur: ${v.ans}</div>
+                    <div id="heat-detail-${index}" class="hidden" style="margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px;">
+                        ${!isNurDeutsch ? `<div style="font-size: 12px; color: #cbd5e1;"><b>Nghĩa:</b> ${v.vnword} | <i style="opacity: 0.8">${v.vnans}</i></div>` : ''}
+                        <div style="font-size: 11px; margin-top: 4px; opacity: 0.6; font-style: italic;">${v.forms || ''}</div>
+                        ${v.ant && v.ant !== "-" ? `<div style="font-size: 11px; margin-top: 4px; color: #fbbf24;"><b>Gegenteil:</b> ${v.ant}</div>` : ''}
+                        ${v.giai_thich_dong_nghia ? `
+                        <div style="font-size: 11px; margin-top: 6px; color: #e0f2fe; background: rgba(56, 189, 248, 0.1); padding: 8px; border-radius: 6px; border-left: 2px solid #38bdf8; line-height: 1.4;">
+                            <b style="color: #38bdf8;">Synonyme:</b> ${v.dong_nghia_b1 || ''} / ${v.dong_nghia_b2 || ''}<br>
+                            ${!isNurDeutsch ? `<i style="opacity: 0.8;">${v.giai_thich_dong_nghia}</i>` : ''}
+                        </div>` : ''}
+                        <div style="font-size: 12px; margin-top: 8px; color: #94a3b8; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px;">
+                            <p style="margin: 0 0 4px 0; color: #f8fafc;"><b>B1:</b> ${v.b1_ex || ''}</p>
+                            ${!isNurDeutsch ? `<p style="margin: 0 0 10px 0; opacity: 0.7; font-style: italic;">${v.vn_b1 || ''}</p>` : ''}
+                            <p style="margin: 0 0 4px 0; color: #f8fafc;"><b>B2:</b> ${v.b2_ex || ''}</p>
+                            ${!isNurDeutsch ? `<p style="margin: 0; opacity: 0.7; font-style: italic;">${v.vn_b2 || ''}</p>` : ''}
+                        </div>
                     </div>
                 </div>
-            </div>
-        `).join('');
+            `;
+        }).join('');
     }
 
     function toggleVisible(st) { 
-        const currentData = data.filter(v => v.level === currentLevel && isMatchGroup(v) && isMatchLek(v, currentLek));
+        const currentData = data.filter(v => v.level === currentLevel && isMatchGroup(v) && isMatchLek(v, currentLek)).filter(v => {
+            if (currentFilter === 'high') return v.importance === 'high';
+            if (currentFilter === 'normal') return v.importance !== 'high';
+            return true;
+        }).filter(v => !mastery[v.word]?.skipped);
+
         currentData.forEach(v => {
             if (!mastery[v.word]) mastery[v.word] = { s: 0, w: 0, a: true };
             mastery[v.word].a = st;
@@ -108122,58 +109073,404 @@ function getMaxStreak(v) {
         save(); 
     }
     
-    function resetStreak() { 
-        if(confirm("Xóa streak bài này?")) { 
-            const currentData = data.filter(v => v.level === currentLevel && isMatchGroup(v) && isMatchLek(v, currentLek));
-            currentData.forEach(v => { if (mastery[v.word]) mastery[v.word].s = 0; }); 
-            save(); 
-        } 
+    function resetStreak() { if(confirm("Xóa streak bài này?")) { 
+        const currentData = data.filter(v => v.level === currentLevel && isMatchGroup(v) && isMatchLek(v, currentLek)).filter(v => !mastery[v.word]?.skipped);
+        currentData.forEach(v => {
+            if (mastery[v.word]) mastery[v.word].s = 0;
+        }); 
+        save(); 
+    } }
+    
+    function resetHeat() { if(confirm("Xóa hoàn toàn heatmap?")) { data.forEach(v => { if (mastery[v.word]) mastery[v.word].w = 0; }); save(); renderHeat(); } }
+
+let searchTimeout;
+function debounceSearch() {
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(executeGlobalSearch, 300);
+}
+
+function executeGlobalSearch() {
+    const query = document.getElementById('global-search-input').value.toLowerCase().trim();
+    const container = document.getElementById('search-results-container');
+    
+    if (!query) {
+        container.innerHTML = '';
+        return;
+    }
+
+    const results = data.filter(v => 
+        (v.word && v.word.toLowerCase().includes(query)) || 
+        (v.vnword && v.vnword.toLowerCase().includes(query)) ||
+        (v.ans && v.ans.toLowerCase().includes(query))
+    ).slice(0, 30);
+
+    if (results.length === 0) {
+        container.innerHTML = '<div style="color: #94a3b8; font-size: 13px; text-align: center; padding: 10px;">Không tìm thấy kết quả phù hợp.</div>';
+        return;
+    }
+
+    container.innerHTML = results.map(item => {
+        if (!mastery[item.word]) mastery[item.word] = { s: 0, w: 0, a: true };
+        const isSaved = mastery[item.word].saved;
+        
+        return `
+        <div class="match-item">
+            <div style="flex: 1;">
+                <b style="color: #fff; font-size: 15px;">${item.word}</b> <span style="font-size: 11px; color: #94a3b8;">(${item.level})</span>
+                ${item.ans && item.ans !== item.word ? `<div style="font-size: 13px; color: #38bdf8; font-weight: bold; margin-top: 2px;">${item.ans}</div>` : ''}
+                <div style="font-size: 12px; color: #94a3b8; margin-top: 3px; font-style: italic;">${item.vnword || item.vnans || ''}</div>
+            </div>
+            <button onclick="toggleSaveGlobal('${item.word.replace(/'/g, "\\'")}')" style="background: ${isSaved ? 'rgba(250, 204, 21, 0.1)' : 'rgba(255, 255, 255, 0.06)'}; border: 1px solid ${isSaved ? 'rgba(250, 204, 21, 0.5)' : 'rgba(255, 255, 255, 0.15)'}; border-radius: 10px; padding: 6px 12px; cursor: pointer; transition: all 0.2s;">
+                ${isSaved ? '💛' : '🤍'}
+            </button>
+        </div>
+        `;
+    }).join('');
+}
+
+function toggleSaveGlobal(wordStr) {
+    if (!mastery[wordStr]) mastery[wordStr] = { s: 0, w: 0, a: true };
+    mastery[wordStr].saved = !mastery[wordStr].saved; 
+    save(); 
+    
+    if (document.getElementById('global-search-input') && document.getElementById('global-search-input').value.trim() !== '') {
+        executeGlobalSearch();
     }
     
-    function resetHeat() { 
-        if(confirm("Xóa heatmap?")) { 
-            data.forEach(v => { if (mastery[v.word]) mastery[v.word].w = 0; }); 
-            save(); renderHeat(); 
-        } 
-    }
-
-    function toggleSaveGlobal(wordStr) {
-        if (!mastery[wordStr]) mastery[wordStr] = { s: 0, w: 0, a: true };
-        mastery[wordStr].saved = !mastery[wordStr].saved;
-        save();
-    }
-
-    function toggleSaveCurrentWord() {
-        if (idx >= session.length || isTransitioning) return;
-        const v = session[idx];
-        if (!mastery[v.word]) mastery[v.word] = { s: 0, w: 0, a: true };
-        mastery[v.word].saved = !mastery[v.word].saved;
-        save();
-        updateSaveButtonUI();
-    }
-
-    function updateSaveButtonUI() {
-        if (idx >= session.length) return;
-        const v = session[idx];
-        const btn = document.getElementById('btn-save-word');
-        if (btn) {
-            const isSaved = mastery[v.word] && mastery[v.word].saved;
-            btn.innerHTML = isSaved ? '💛' : '🤍';
+    const vocabModal = document.getElementById('vocab-table-modal');
+    if (vocabModal && !vocabModal.classList.contains('hidden')) {
+        const title = document.getElementById('vocab-table-title').innerText;
+        if (title.includes('Danh sách đã lưu')) {
+            openSavedVocabTable(); 
+        } else {
+            openVocabTable(); 
         }
     }
+    
+    if (document.getElementById('analyze-input') && document.getElementById('analyze-input').value.trim().length > 0) {
+        analyzeText();
+    }
+}
 
-    function showCustomAlert(message, title = "Thông báo", icon = "🔔") {
-        document.getElementById('alert-message').innerText = message;
-        document.getElementById('alert-title').innerText = title;
-        document.getElementById('alert-icon').innerText = icon;
-        document.getElementById('custom-alert-modal').classList.remove('hidden');
+/* =========================================
+   TEXT ANALYZATOR - STRICT VOCABULARY MATCHER
+========================================= */
+
+const STOP_WORDS = new Set([
+    'der','die','das','des','dem','den','ein','eine','einer','eines','einem','einen',
+    'ich','du','er','sie','es','wir','ihr','mich','dich','uns','euch','mir','dir','ihnen',
+    'und','oder','aber','denn','in','im','am','an','aus','nach','über','um','unter','vor','von','vom','für','gegen','zu','zum','zur','mit',
+    'dass','als','wenn','weil','da','ob','wie',
+    'sein','ist','bin','bist','sind','war','waren','gewesen',
+    'haben','habe','hast','hat','hatten','gehabt',
+    'werden','werde','wirst','wird','wurden','geworden',
+    'können','kann','kannst','konnte','müssen','muss','musst','musste',
+    'wollen','will','willst','wollte','sollen','soll','sollst','sollte',
+    'dürfen','darf','darfst','durfte','mögen','mag','magst','mochte','möchte',
+    'sich','etwas','etw','jmdn','jmdm','nur','auch','schon','noch','sehr','hier','dort',
+    'auf','ab','bei','bis','durch','hinter','neben','ohne','seit','während','zwischen'
+]);
+
+const NO_STEM_WORDS = ['bist', 'ist', 'sind', 'war', 'waren', 'hast', 'hat', 'hatte', 'hatten', 'sein', 'werden', 'wird', 'wurde', 'wurden', 'kann', 'muss', 'soll', 'darf', 'will', 'mag'];
+
+function getGermanStem(word) {
+    if (!word || word.length <= 3) return word.toLowerCase();
+    let w = word.toLowerCase().trim();
+    if (NO_STEM_WORDS.includes(w)) return w;
+    w = w.replace(/ä/g, 'a').replace(/ö/g, 'o').replace(/ü/g, 'u').replace(/ß/g, 'ss');
+    const endings = ['st', 'ten', 'test', 'te', 'et', 'en', 'e', 't'];
+    for (let end of endings) {
+        if (w.endsWith(end) && w.length >= end.length + 3) {
+            w = w.slice(0, -end.length);
+            break;
+        }
+    }
+    return w;
+}
+
+let analyzerIndex = [];
+function buildAnalyzerIndex() {
+    if (typeof data === 'undefined' || !Array.isArray(data) || data.length === 0) {
+        setTimeout(buildAnalyzerIndex, 300);
+        return;
     }
 
-    function closeCustomAlert() {
-        document.getElementById('custom-alert-modal').classList.add('hidden');
+    analyzerIndex = data.map(item => {
+        let entry = { 
+            orig: item, 
+            coreStems: [],
+            formsStems: [],
+            length: 0
+        };
+
+        let rawWord = item.word.replace(/\b(akk|dat|gen|nom|sg|pl|jmdn|jmdm|etw|sich)\b\.?/gi, ' ')
+                               .replace(/[.,!?:;()[\]"']/g, ' ').toLowerCase();
+        let wordTokens = rawWord.split(/\s+/).filter(w => w.length > 2 && !STOP_WORDS.has(w));
+        entry.coreStems = wordTokens.map(t => getGermanStem(t));
+
+        if (item.forms) {
+            let fRaw = item.forms.replace(/[.,!?:;()[\]"']/g, ' ').toLowerCase();
+            let fTokens = fRaw.split(/\s+/).filter(w => w.length > 2 && !STOP_WORDS.has(w));
+            entry.formsStems = fTokens.map(t => getGermanStem(t));
+        }
+
+        entry.length = entry.coreStems.length;
+        return entry;
+    }).filter(e => e.coreStems.length > 0 || e.formsStems.length > 0);
+
+    analyzerIndex.sort((a, b) => b.length - a.length);
+}
+
+window.addEventListener('DOMContentLoaded', buildAnalyzerIndex);
+
+let analyzeTimeout;
+function debounceAnalyze() {
+    clearTimeout(analyzeTimeout);
+    analyzeTimeout = setTimeout(analyzeText, 300); 
+}
+
+function openAnalyzer() {
+    document.getElementById('menu-screen').classList.add('hidden');
+    document.getElementById('analyzer-screen').classList.remove('hidden');
+    if (analyzerIndex.length === 0) buildAnalyzerIndex();
+}
+
+function closeAnalyzer() {
+    document.getElementById('analyzer-screen').classList.add('hidden');
+    document.getElementById('menu-screen').classList.remove('hidden');
+}
+
+function analyzeText() {
+    const text = document.getElementById('analyze-input').value;
+    const outputContainer = document.getElementById('analyzer-output-container');
+    
+    if (text.trim().length === 0) {
+        outputContainer.classList.add('hidden');
+        document.getElementById('stat-words').innerText = "0";
+        document.getElementById('dynamic-level-stats').innerHTML = "";
+        return;
     }
 
-    init(); 
+    outputContainer.classList.remove('hidden');
+    
+    const textWords = text.trim().split(/\s+/);
+    document.getElementById('stat-words').innerText = textWords.length;
+
+    let userTokens = [];
+    const wordsAndSpaces = text.split(/(\s+)/);
+    wordsAndSpaces.forEach(part => {
+        if (/^\s+$/.test(part) || part === "") {
+            userTokens.push({ isSpace: true, text: part });
+        } else {
+            let clean = part.toLowerCase().replace(/[.,!?:;()[\]"']/g, '');
+            userTokens.push({
+                isSpace: false,
+                original: part,
+                clean: clean,
+                stem: getGermanStem(clean),
+                isStop: STOP_WORDS.has(clean) || clean.length <= 2,
+                used: false,
+                matchItem: null
+            });
+        }
+    });
+
+    let matchedEntries = [];
+
+    analyzerIndex.forEach(entry => {
+        let matchedAtLeastOnce = false;
+        let keepSearching = true;
+
+        while (keepSearching) {
+            let matchIndices = [];
+            let allFound = true;
+
+            if (entry.coreStems.length > 0) {
+                for (let eStem of entry.coreStems) {
+                    let foundIdx = userTokens.findIndex((ut, idx) => 
+                        !ut.isSpace && !ut.isStop && !ut.used && !matchIndices.includes(idx) &&
+                        (ut.clean === eStem || ut.stem === eStem)
+                    );
+                    if (foundIdx !== -1) {
+                        matchIndices.push(foundIdx);
+                    } else {
+                        allFound = false;
+                        break;
+                    }
+                }
+            } else {
+                allFound = false;
+            }
+
+            if (!allFound && entry.formsStems.length > 0 && entry.length <= 1) {
+                matchIndices = [];
+                let anyFormFound = false;
+                for (let fStem of entry.formsStems) {
+                    let foundIdx = userTokens.findIndex((ut, idx) => 
+                        !ut.isSpace && !ut.isStop && !ut.used &&
+                        (ut.clean === fStem || ut.stem === fStem)
+                    );
+                    if (foundIdx !== -1) {
+                        anyFormFound = true;
+                        matchIndices.push(foundIdx);
+                        break;
+                    }
+                }
+                if (anyFormFound) allFound = true;
+            }
+
+            if (allFound && matchIndices.length > 0) {
+                matchedAtLeastOnce = true;
+                matchIndices.forEach(idx => {
+                    userTokens[idx].used = true;
+                    userTokens[idx].matchItem = entry.orig;
+                });
+            } else {
+                keepSearching = false; 
+            }
+        }
+
+        if (matchedAtLeastOnce) {
+            matchedEntries.push(entry.orig);
+        }
+    });
+
+    let levelCounts = {};
+    matchedEntries.forEach(item => {
+        let mainLvl = item.level || "Chưa phân loại";
+        let subLvl = item.lek ? `Lek ${item.lek}` : "Wortschatz";
+        let type = (item.type || "").toLowerCase();
+        
+        if (type.includes("rede") || item.lek === "redemittel") {
+            subLvl = "🗣️ Redemittel";
+        } else if (item.lek === "morong" || item.lek == 0) {
+            subLvl = "🌱 Morong";
+        } else if (mainLvl === "B1 Goethe" && item.lek) {
+            subLvl = item.lek.toLowerCase().includes("lek") ? item.lek : `Cấp độ ${item.lek}`;
+        }
+
+        if (!levelCounts[mainLvl]) levelCounts[mainLvl] = { total: 0, subs: {} };
+        levelCounts[mainLvl].total++;
+        levelCounts[mainLvl].subs[subLvl] = (levelCounts[mainLvl].subs[subLvl] || 0) + 1;
+    });
+
+    let levelHtml = Object.keys(levelCounts).sort().map(lvl => {
+        let subs = levelCounts[lvl].subs;
+        let subStr = Object.keys(subs).sort().map(s => `${s}: ${subs[s]}`).join(' | ');
+        return `
+        <div class="stat-card" style="border-bottom: 3px solid #c084fc; padding: 12px; margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <h4 style="margin: 0; color: #f8fafc; font-size: 14px; font-weight: bold;">${lvl}</h4>
+                <div class="num" style="color: #c084fc; font-size: 22px;">${levelCounts[lvl].total}</div>
+            </div>
+            <div style="color: #94a3b8; font-size: 11.5px; margin-top: 6px; line-height: 1.4;">${subStr}</div>
+        </div>`;
+    }).join('');
+    
+    document.getElementById('dynamic-level-stats').innerHTML = levelHtml || `<div style="color:#94a3b8; font-size:13px;">Chưa phát hiện từ vựng thuộc hệ thống.</div>`;
+
+    let highlightedHtml = userTokens.map(ut => {
+        if (ut.isSpace) return ut.text;
+        if (ut.used && ut.matchItem) {
+            let type = (ut.matchItem.type || "").toLowerCase();
+            let isRede = type.includes("rede") || ut.matchItem.lek === "redemittel";
+            let isMorong = ut.matchItem.lek === "morong" || ut.matchItem.lek == 0;
+            let badgeClass = isRede ? "hl-rede" : (isMorong ? "hl-reflex" : "hl-b1b2");
+            return `<span class="${badgeClass}">${ut.original}</span>`;
+        }
+        return ut.original;
+    }).join('');
+    
+    document.getElementById('analyze-result-text').innerHTML = highlightedHtml;
+
+    let listHtml = '';
+    const grouped = {};
+    matchedEntries.forEach(item => {
+        let lvl = item.level || "Chưa phân loại";
+        if (!grouped[lvl]) grouped[lvl] = [];
+        grouped[lvl].push(item);
+    });
+
+    Object.keys(grouped).sort().forEach(lvl => {
+        listHtml += `<div style="color: #fff; font-weight: 800; margin: 24px 0 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 5px; font-size: 15px;">📌 ${lvl} (${grouped[lvl].length} từ)</div>`;
+        
+        grouped[lvl].forEach(item => {
+            const itemType = (item.type || "").toLowerCase();
+            const isRede = itemType.includes("rede") || item.lek === "redemittel";
+            const isMoRong = item.lek === "morong" || item.lek == 0;
+
+            let badgeClass = "hl-reflex";
+            let badgeText = `Lek ${item.lek}`;
+
+            if (isRede) {
+                badgeClass = "hl-rede";
+                badgeText = "🗣️ Redemittel";
+            } else if (isMoRong) {
+                badgeClass = "hl-b1b2";
+                badgeText = "🌱 Morong";
+            } else if (lvl === "B1 Goethe") {
+                badgeText = `Cấp độ ${item.lek}`;
+            }
+
+            if (!mastery[item.word]) mastery[item.word] = { s: 0, w: 0, a: true };
+            const isSaved = mastery[item.word].saved;
+
+            listHtml += `
+                <div class="match-item">
+                    <div style="flex: 1;">
+                        <b style="color: #fff; font-size: 15px;">${item.word}</b>
+                        ${item.ans && item.ans !== item.word ? `<div style="font-size: 13px; color: #38bdf8; font-weight: bold; margin-top: 2px;">${item.ans}</div>` : ''}
+                        <div style="font-size: 12px; color: #94a3b8; margin-top: 3px; font-style: italic;">${item.vnword || item.vnans || ''}</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+                        <span class="${badgeClass}" style="font-size:11px; padding:4px 8px; border-radius:12px; font-weight:600;">${badgeText}</span>
+                        <button onclick="toggleSaveGlobal('${item.word.replace(/'/g, "\\'")}')" style="background: ${isSaved ? 'rgba(250, 204, 21, 0.1)' : 'rgba(255, 255, 255, 0.06)'}; border: 1px solid ${isSaved ? 'rgba(250, 204, 21, 0.5)' : 'rgba(255, 255, 255, 0.15)'}; border-radius: 8px; padding: 4px 12px; cursor: pointer; transition: all 0.2s;">
+                            ${isSaved ? '💛' : '🤍'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+    });
+    
+    document.getElementById('analyze-match-list').innerHTML = listHtml || ``;
+}
+
+function toggleSaveCurrentWord() {
+    if (idx >= session.length || isTransitioning) return;
+    const v = session[idx];
+    
+    if (!mastery[v.word]) mastery[v.word] = { s: 0, w: 0, a: true };
+    mastery[v.word].saved = !mastery[v.word].saved; 
+    
+    save(); 
+    updateSaveButtonUI();
+}
+
+function updateSaveButtonUI() {
+    if (idx >= session.length) return;
+    const v = session[idx];
+    const btn = document.getElementById('btn-save-word');
+    if (btn) {
+        const isSaved = mastery[v.word] && mastery[v.word].saved;
+        btn.innerHTML = isSaved ? '💛' : '🤍';
+        btn.style.borderColor = isSaved ? 'rgba(250, 204, 21, 0.5)' : 'rgba(255, 255, 255, 0.15)';
+        btn.style.background = isSaved ? 'rgba(250, 204, 21, 0.1)' : 'rgba(255, 255, 255, 0.06)';
+    }
+}
+
+function showCustomAlert(message, title = "Thông báo", icon = "🔔") {
+    document.getElementById('alert-message').innerText = message;
+    document.getElementById('alert-title').innerText = title;
+    document.getElementById('alert-icon').innerText = icon;
+    document.getElementById('custom-alert-modal').classList.remove('hidden');
+}
+
+function closeCustomAlert() {
+    document.getElementById('custom-alert-modal').classList.add('hidden');
+}
+
+init(); 
 </script>
 
 </body>
