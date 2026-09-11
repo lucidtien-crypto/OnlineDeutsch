@@ -107643,42 +107643,79 @@ function getMaxStreak(v) {
         }
     }
 
-    /* === HỆ THỐNG ĐỒNG BỘ CLOUD FIREBASE DUAL-LAYER === */
-    function updateSyncStatusUI(statusText, isSaving = false) {
-        const badge = document.getElementById('cloud-sync-status');
-        if (!badge) return;
-        if (isSaving) {
-            badge.style.background = "rgba(251, 191, 36, 0.15)";
-            badge.style.color = "#fbbf24";
-            badge.style.borderColor = "rgba(251, 191, 36, 0.3)";
-            badge.innerHTML = "⏳ Đang lưu mây...";
-        } else {
-            badge.style.background = "rgba(52, 211, 153, 0.15)";
-            badge.style.color = "#34d399";
-            badge.style.borderColor = "rgba(52, 211, 153, 0.3)";
-            badge.innerHTML = `☁️ ${statusText}`;
-        }
-    }
+    /* === HỆ THỐNG TỰ ĐỘNG LƯU & ĐỒNG BỘ CLOUD FIREBASE === */
+		let cloudSaveTimeout = null;
 
-    async function save() { 
-        localStorage.setItem('b2_pro_v1', JSON.stringify(mastery)); 
-        renderList(); 
+		function updateSyncStatusUI(statusText, isSaving = false) {
+			const badge = document.getElementById('cloud-sync-status');
+			if (!badge) return;
+			if (isSaving) {
+				badge.style.background = "rgba(251, 191, 36, 0.15)";
+				badge.style.color = "#fbbf24";
+				badge.style.borderColor = "rgba(251, 191, 36, 0.3)";
+				badge.innerHTML = `⏳ ${statusText}`;
+			} else {
+				badge.style.background = "rgba(52, 211, 153, 0.15)";
+				badge.style.color = "#34d399";
+				badge.style.borderColor = "rgba(52, 211, 153, 0.3)";
+				badge.innerHTML = `☁️ ${statusText}`;
+			}
+		}
 
-        if (userPin && window.db) {
-            updateSyncStatusUI("", true);
-            try {
-                const userDocRef = window.doc(window.db, "user_progress", userPin);
-                await window.setDoc(userDocRef, {
-                    mastery: mastery,
-                    lastUpdated: new Date().toISOString()
-                }, { merge: true });
-                updateSyncStatusUI("Mây đã đồng bộ");
-            } catch (err) {
-                console.error("Lỗi đồng bộ Mây:", err);
-                updateSyncStatusUI("Lỗi mây (Lưu local)");
-            }
-        }
-    }
+		// Hàm lưu tự động chính (Auto-save)
+		function save() { 
+			// 1. Lưu ngay vào bộ nhớ máy (Local)
+			localStorage.setItem('b2_pro_v1', JSON.stringify(mastery)); 
+			renderList(); 
+
+			// 2. Tự động đồng bộ lên Mây (Debounce 1.5s để tối ưu hiệu năng)
+			if (userPin && window.db) {
+				updateSyncStatusUI("Đang chờ lưu...", true);
+				clearTimeout(cloudSaveTimeout);
+				
+				cloudSaveTimeout = setTimeout(async () => {
+					await forceImmediateSave();
+				}, 1500);
+			}
+		}
+
+		// Hàm đẩy dữ liệu tức thì lên Mây
+		async function forceImmediateSave() {
+			localStorage.setItem('b2_pro_v1', JSON.stringify(mastery));
+			if (userPin && window.db) {
+				try {
+					updateSyncStatusUI("Đang lưu mây...", true);
+					const userDocRef = window.doc(window.db, "user_progress", userPin);
+					await window.setDoc(userDocRef, {
+						mastery: mastery,
+						lastUpdated: new Date().toISOString()
+					}, { merge: true });
+					updateSyncStatusUI("Mây đã đồng bộ");
+				} catch (err) {
+					console.error("Lỗi đồng bộ Mây:", err);
+					updateSyncStatusUI("Lỗi mây (Lưu local)");
+				}
+			}
+		}
+
+		// Tự động lưu khi ẩn trình duyệt hoặc chuyển sang ứng dụng khác
+		document.addEventListener('visibilitychange', () => {
+			if (document.visibilityState === 'hidden') {
+				forceImmediateSave();
+			}
+		});
+
+		// Tự động lưu trước khi đóng tab/trình duyệt
+		window.addEventListener('beforeunload', () => {
+			forceImmediateSave();
+		});
+
+		// Tự động lưu định kỳ mỗi 30 giây (Chạy ngầm)
+		setInterval(() => {
+			if (userPin && window.db) {
+				forceImmediateSave();
+			}
+		}, 30000);
 
     async function checkUserPinAndSync() {
         if (!userPin) {
