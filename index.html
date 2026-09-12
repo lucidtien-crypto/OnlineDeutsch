@@ -107733,14 +107733,23 @@ function getMaxStreak(v) {
                 if (docSnap.exists()) {
                     const cloudData = docSnap.data().mastery;
                     if (cloudData && typeof cloudData === 'object') {
-                        mastery = cloudData;
+                        // FIX LỖI: Gộp dữ liệu từ mây vào máy thay vì ghi đè hoàn toàn
+                        Object.keys(cloudData).forEach(key => {
+                            if (!mastery[key]) mastery[key] = { s: 0, w: 0, a: true };
+                            mastery[key].s = cloudData[key].s ?? mastery[key].s;
+                            mastery[key].w = cloudData[key].w ?? mastery[key].w;
+                            mastery[key].a = cloudData[key].a ?? mastery[key].a;
+                            mastery[key].saved = cloudData[key].saved ?? mastery[key].saved;
+                            mastery[key].skipped = cloudData[key].skipped ?? mastery[key].skipped;
+                        });
+                        
                         localStorage.setItem('b2_pro_v1', JSON.stringify(mastery));
                         updateSyncStatusUI("Đã tải từ Mây");
                         renderList();
                         renderHeat();
                     }
                 } else {
-                    await save();
+                    await forceImmediateSave(); // Tạo kho mới nếu chưa có
                     updateSyncStatusUI("Tạo kho Mây mới");
                 }
             } catch (err) {
@@ -108682,6 +108691,9 @@ function normalizeGerman(text) {
             } else {
                 document.getElementById('finish-msg').innerText = "Đã hoàn thành lượt ôn tập 5 từ vựng.";
             }
+            
+            // THÊM DÒNG NÀY: Ép lưu tức thì lên Mây khi vừa kết thúc phiên học
+            forceImmediateSave(); 
             return;
         }
 
