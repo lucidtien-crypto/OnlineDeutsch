@@ -107679,7 +107679,7 @@ function getMaxStreak(v) {
 			}
 		}
 
-		// Hàm đẩy dữ liệu tức thì lên Mây
+		// 1. Hàm đẩy dữ liệu tức thì lên Mây (Đã mã hóa an toàn tránh lỗi dấu chấm/ký tự đặc biệt)
 		async function forceImmediateSave() {
 			localStorage.setItem('b2_pro_v1', JSON.stringify(mastery));
 			if (userPin && window.db) {
@@ -107687,7 +107687,7 @@ function getMaxStreak(v) {
 					updateSyncStatusUI("Đang lưu mây...", true);
 					const userDocRef = window.doc(window.db, "user_progress", userPin);
 					await window.setDoc(userDocRef, {
-						mastery: mastery,
+						mastery_json: JSON.stringify(mastery),
 						lastUpdated: new Date().toISOString()
 					}, { merge: true });
 					updateSyncStatusUI("Mây đã đồng bộ");
@@ -107717,47 +107717,56 @@ function getMaxStreak(v) {
 			}
 		}, 30000);
 
-    async function checkUserPinAndSync() {
-        if (!userPin) {
-            userPin = prompt("Nhập Mã PIN cá nhân của bạn (để đồng bộ tiến độ trên mây giữa các thiết bị):", "1009");
-            if (!userPin) userPin = "default_user";
-            localStorage.setItem('b2_user_pin', userPin);
-        }
+   // 2. Hàm tải và gộp dữ liệu thông minh từ Mây về máy
+		async function checkUserPinAndSync() {
+			if (!userPin) {
+				userPin = prompt("Nhập Mã PIN cá nhân của bạn (để đồng bộ tiến độ trên mây giữa các thiết bị):", "1009");
+				if (!userPin) userPin = "default_user";
+				localStorage.setItem('b2_user_pin', userPin);
+			}
 
-        if (window.db) {
-            updateSyncStatusUI("Đang tải mây...");
-            try {
-                const userDocRef = window.doc(window.db, "user_progress", userPin);
-                const docSnap = await window.getDoc(userDocRef);
+			if (window.db) {
+				updateSyncStatusUI("Đang tải mây...");
+				try {
+					const userDocRef = window.doc(window.db, "user_progress", userPin);
+					const docSnap = await window.getDoc(userDocRef);
 
-                if (docSnap.exists()) {
-                    const cloudData = docSnap.data().mastery;
-                    if (cloudData && typeof cloudData === 'object') {
-                        // FIX LỖI: Gộp dữ liệu từ mây vào máy thay vì ghi đè hoàn toàn
-                        Object.keys(cloudData).forEach(key => {
-                            if (!mastery[key]) mastery[key] = { s: 0, w: 0, a: true };
-                            mastery[key].s = cloudData[key].s ?? mastery[key].s;
-                            mastery[key].w = cloudData[key].w ?? mastery[key].w;
-                            mastery[key].a = cloudData[key].a ?? mastery[key].a;
-                            mastery[key].saved = cloudData[key].saved ?? mastery[key].saved;
-                            mastery[key].skipped = cloudData[key].skipped ?? mastery[key].skipped;
-                        });
-                        
-                        localStorage.setItem('b2_pro_v1', JSON.stringify(mastery));
-                        updateSyncStatusUI("Đã tải từ Mây");
-                        renderList();
-                        renderHeat();
-                    }
-                } else {
-                    await forceImmediateSave(); // Tạo kho mới nếu chưa có
-                    updateSyncStatusUI("Tạo kho Mây mới");
-                }
-            } catch (err) {
-                console.error("Lỗi lấy dữ liệu từ Cloud:", err);
-                updateSyncStatusUI("Dùng dữ liệu local");
-            }
-        }
-    }
+					if (docSnap.exists()) {
+						const data = docSnap.data();
+						let cloudData = null;
+
+						if (data.mastery_json) {
+							try { cloudData = JSON.parse(data.mastery_json); } catch(e){}
+						} else if (data.mastery && typeof data.mastery === 'object') {
+							cloudData = data.mastery;
+						}
+
+						if (cloudData && typeof cloudData === 'object') {
+							// Gộp dữ liệu mây vào máy để bảo toàn Streak
+							Object.keys(cloudData).forEach(key => {
+								if (!mastery[key]) mastery[key] = { s: 0, w: 0, a: true };
+								mastery[key].s = cloudData[key].s ?? mastery[key].s;
+								mastery[key].w = cloudData[key].w ?? mastery[key].w;
+								mastery[key].a = cloudData[key].a ?? mastery[key].a;
+								mastery[key].saved = cloudData[key].saved ?? mastery[key].saved;
+								mastery[key].skipped = cloudData[key].skipped ?? mastery[key].skipped;
+							});
+							
+							localStorage.setItem('b2_pro_v1', JSON.stringify(mastery));
+							updateSyncStatusUI("Mây đã đồng bộ");
+							renderList();
+							renderHeat();
+						}
+					} else {
+						await forceImmediateSave();
+						updateSyncStatusUI("Tạo kho Mây mới");
+					}
+				} catch (err) {
+					console.error("Lỗi lấy dữ liệu từ Cloud:", err);
+					updateSyncStatusUI("Lỗi mây (Lưu local)");
+				}
+			}
+		}
 
     function changeUserPin() {
         const newPin = prompt("Nhập Mã PIN cá nhân mới:", userPin);
