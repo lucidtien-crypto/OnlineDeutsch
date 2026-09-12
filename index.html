@@ -108313,39 +108313,82 @@ function normalizeGerman(text) {
         .replace(/\b(jemandem|jemanden|jemand)\s+(etwas)\b/g, "$2 $1");
 }
 
-// HÀM PHÁT ÂM (TỰ ĐỘNG CHUYỂN VIẾT TẮT SANG TỪ ĐẦY ĐỦ KHI ĐỌC)
-		function speakGerman(text) {
-			if (!text) return;
-			
-			let cleanText = text.trim()
-				.replace(/\bNom\.?\b/gi, "Nominativ")
-				.replace(/\bAkk\.?\b/gi, "Akkusativ")
-				.replace(/\bDat\.?\b|\bDa\b/gi, "Dativ")
-				.replace(/\bGen\.?\b/gi, "Genitiv")
-				.replace(/\bjmdm\.?\b/gi, "jemandem")
-				.replace(/\bjmdn\.?\b/gi, "jemanden")
-				.replace(/\bjmd\.?\b/gi, "jemand")
-				.replace(/\betw\.?\b/gi, "etwas")
-				.replace(/\br\.\s/g, "der ")
-				.replace(/\be\.\s/g, "die ")
-				.replace(/\bs\.\s/g, "das ");
+// 1. Hàm tự động thêm Umlaut cho nguyên âm cuối (a->ä, o->ö, u->ü, au->äu)
+function applyUmlaut(word) {
+    if (!word) return word;
+    let lastAu = Math.max(word.lastIndexOf('au'), word.lastIndexOf('Au'));
+    if (lastAu !== -1) {
+        let match = word.substring(lastAu, lastAu + 2);
+        let rep = (match === 'Au') ? 'Äu' : 'äu';
+        return word.substring(0, lastAu) + rep + word.substring(lastAu + 2);
+    }
+    return word.replace(/([aouAOU])(?=[^aouAOU]*$)/, (m) => {
+        const map = { 'a': 'ä', 'o': 'ö', 'u': 'ü', 'A': 'Ä', 'O': 'Ö', 'U': 'Ü' };
+        return map[m] || m;
+    });
+}
 
-			let voices = window.speechSynthesis.getVoices();
-			let stefanVoice = voices.find(v => v.name.includes("Stefan") && v.lang.startsWith("de"));
-			let defaultGerman = voices.find(v => v.lang.startsWith("de"));
+// 2. Hàm xử lý tự động ghép số nhiều và chuẩn hóa (Sg. / Pl.)
+function formatGermanForSpeech(text) {
+    if (!text) return "";
+    let clean = text.trim();
 
-			window.speechSynthesis.cancel();
+    clean = clean.replace(/\(\s*Sg\.\s*\)/gi, "Singular")
+                 .replace(/\(\s*Pl\.\s*\)/gi, "Plural")
+                 .replace(/\bSg\.\b/gi, "Singular")
+                 .replace(/\bPl\.\b/gi, "Plural");
 
-			if (stefanVoice || defaultGerman) {
-				let utterance = new SpeechSynthesisUtterance(cleanText);
-				utterance.voice = stefanVoice || defaultGerman;
-				utterance.lang = "de-DE";
-				utterance.rate = 0.95;
-				window.speechSynthesis.speak(utterance);
-			} else if (window.responsiveVoice) {
-				responsiveVoice.speak(cleanText, "Deutsch Male", { rate: 0.95 });
-			}
-		}
+    clean = clean.replace(/\b([A-ZÄÖÜa-zäöüß]+),\s*("|-)?([a-zäöüß]*)\b/g, (fullMatch, word, symbol, ending) => {
+        if (!symbol && !ending) return fullMatch;
+
+        let pluralWord = word;
+        if (symbol === '"') {
+            pluralWord = applyUmlaut(word);
+        }
+        if (ending) {
+            pluralWord += ending;
+        }
+        return `${word}, ${pluralWord}`;
+    });
+
+    return clean;
+}
+
+// 3. Hàm phát âm đã tích hợp bộ đọc danh từ thông minh
+function speakGerman(text) {
+    if (!text) return;
+    
+    let formattedText = formatGermanForSpeech(text);
+
+    let cleanText = formattedText.trim()
+        .replace(/\bNom\.?\b/gi, "Nominativ")
+        .replace(/\bAkk\.?\b/gi, "Akkusativ")
+        .replace(/\bDat\.?\b|\bDa\b/gi, "Dativ")
+        .replace(/\bGen\.?\b/gi, "Genitiv")
+        .replace(/\bjmdm\.?\b/gi, "jemandem")
+        .replace(/\bjmdn\.?\b/gi, "jemanden")
+        .replace(/\bjmd\.?\b/gi, "jemand")
+        .replace(/\betw\.?\b/gi, "etwas")
+        .replace(/\br\.\s/g, "der ")
+        .replace(/\be\.\s/g, "die ")
+        .replace(/\bs\.\s/g, "das ");
+
+    let voices = window.speechSynthesis.getVoices();
+    let stefanVoice = voices.find(v => v.name.includes("Stefan") && v.lang.startsWith("de"));
+    let defaultGerman = voices.find(v => v.lang.startsWith("de"));
+
+    window.speechSynthesis.cancel();
+
+    if (stefanVoice || defaultGerman) {
+        let utterance = new SpeechSynthesisUtterance(cleanText);
+        utterance.voice = stefanVoice || defaultGerman;
+        utterance.lang = "de-DE";
+        utterance.rate = 0.95;
+        window.speechSynthesis.speak(utterance);
+    } else if (window.responsiveVoice) {
+        responsiveVoice.speak(cleanText, "Deutsch Male", { rate: 0.95 });
+    }
+}
 
     function exportData() {
         const dataStr = JSON.stringify(mastery);
