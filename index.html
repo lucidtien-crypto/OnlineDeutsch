@@ -109166,48 +109166,52 @@ function speakGerman(text) {
     });
 
     function renderHeat() {
-        const cloud = document.getElementById('heat-cloud');
-        const fails = data.filter(v => v.level === currentLevel && isMatchGroup(v) && (mastery[v.word]?.w || 0) > 0)
-                          .sort((a,b) => (mastery[b.word]?.w || 0) - (mastery[a.word]?.w || 0));
-        
-        if (fails.length === 0) {
-            cloud.innerHTML = `<p style="text-align:center; font-size:12px; opacity:0.4">Chưa có dữ liệu heatmap cho mục này.</p>`; return;
-        }
+		const cloud = document.getElementById('heat-cloud');
+		
+		// Đã bỏ lọc theo currentLevel & isMatchGroup để hiện toàn bộ từ sai trên hệ thống
+		const fails = data.filter(v => (mastery[v.word]?.w || 0) > 0)
+						  .sort((a,b) => (mastery[b.word]?.w || 0) - (mastery[a.word]?.w || 0));
+		
+		if (fails.length === 0) {
+			cloud.innerHTML = `<p style="text-align:center; font-size:12px; opacity:0.4">Chưa có dữ liệu heatmap.</p>`; 
+			return;
+		}
 
-        cloud.innerHTML = fails.map((v, index) => {
-            const failCount = mastery[v.word]?.w || 0;
-            const fontSize = Math.min(13 + failCount * 2, 22); 
-            const opacity = Math.min(0.3 + failCount * 0.15, 1);
-            return `
-                <div class="heat-item" style="border-left: 4px solid rgba(248, 113, 113, ${opacity}); background: rgba(248, 113, 113, 0.05); padding: 12px; margin-bottom: 10px; border-radius: 12px; flex-direction: column; align-items: stretch;">
-                    <div style="display:flex; justify-content:space-between; align-items: center; width: 100%;">
-                        <div>
-                            <b style="font-size: ${fontSize}px; color: var(--danger)">${v.word}</b>
-                            <span style="font-size: 11px; font-weight: bold; color: var(--danger); background: rgba(248, 113, 113, 0.2); padding: 2px 6px; border-radius: 4px; margin-left: 8px;">Fehler: ${failCount}</span>
-                        </div>
-                        <button id="heat-btn-${index}" onclick="toggleHeatDetail(${index})" style="background: none; border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; padding: 4px 12px; font-size: 16px; font-weight: bold;">+</button>
-                    </div>
-                    <div style="font-size: 13px; color: var(--primary); font-weight: 600; margin-top: 5px;">Struktur: ${v.ans}</div>
-                    <div id="heat-detail-${index}" class="hidden" style="margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px;">
-                        ${!isNurDeutsch ? `<div style="font-size: 12px; color: #cbd5e1;"><b>Nghĩa:</b> ${v.vnword} | <i style="opacity: 0.8">${v.vnans}</i></div>` : ''}
-                        <div style="font-size: 11px; margin-top: 4px; opacity: 0.6; font-style: italic;">${v.forms || ''}</div>
-                        ${v.ant && v.ant !== "-" ? `<div style="font-size: 11px; margin-top: 4px; color: #fbbf24;"><b>Gegenteil:</b> ${v.ant}</div>` : ''}
-                        ${v.giai_thich_dong_nghia ? `
-                        <div style="font-size: 11px; margin-top: 6px; color: #e0f2fe; background: rgba(56, 189, 248, 0.1); padding: 8px; border-radius: 6px; border-left: 2px solid #38bdf8; line-height: 1.4;">
-                            <b style="color: #38bdf8;">Synonyme:</b> ${v.dong_nghia_b1 || ''} / ${v.dong_nghia_b2 || ''}<br>
-                            ${!isNurDeutsch ? `<i style="opacity: 0.8;">${v.giai_thich_dong_nghia}</i>` : ''}
-                        </div>` : ''}
-                        <div style="font-size: 12px; margin-top: 8px; color: #94a3b8; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px;">
-                            <p style="margin: 0 0 4px 0; color: #f8fafc;"><b>B1:</b> ${v.b1_ex || ''}</p>
-                            ${!isNurDeutsch ? `<p style="margin: 0 0 10px 0; opacity: 0.7; font-style: italic;">${v.vn_b1 || ''}</p>` : ''}
-                            <p style="margin: 0 0 4px 0; color: #f8fafc;"><b>B2:</b> ${v.b2_ex || ''}</p>
-                            ${!isNurDeutsch ? `<p style="margin: 0; opacity: 0.7; font-style: italic;">${v.vn_b2 || ''}</p>` : ''}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
+		cloud.innerHTML = fails.map((v, index) => {
+			const failCount = mastery[v.word]?.w || 0;
+			const fontSize = Math.min(13 + failCount * 2, 22); 
+			const opacity = Math.min(0.3 + failCount * 0.15, 1);
+			return `
+				<div class="heat-item" style="border-left: 4px solid rgba(248, 113, 113, ${opacity}); background: rgba(248, 113, 113, 0.05); padding: 12px; margin-bottom: 10px; border-radius: 12px; flex-direction: column; align-items: stretch;">
+					<div style="display:flex; justify-content:space-between; align-items: center; width: 100%;">
+						<div>
+							<b style="font-size: ${fontSize}px; color: var(--danger)">${v.word}</b>
+							<span style="font-size: 11px; font-weight: bold; color: var(--danger); background: rgba(248, 113, 113, 0.2); padding: 2px 6px; border-radius: 4px; margin-left: 8px;">Fehler: ${failCount}</span>
+							<span style="font-size: 10px; color: #94a3b8; margin-left: 4px;">(${v.level || ''})</span>
+						</div>
+						<button id="heat-btn-${index}" onclick="toggleHeatDetail(${index})" style="background: none; border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; padding: 4px 12px; font-size: 16px; font-weight: bold;">+</button>
+					</div>
+					<div style="font-size: 13px; color: var(--primary); font-weight: 600; margin-top: 5px;">Struktur: ${v.ans}</div>
+					<div id="heat-detail-${index}" class="hidden" style="margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px;">
+						${!isNurDeutsch ? `<div style="font-size: 12px; color: #cbd5e1;"><b>Nghĩa:</b> ${v.vnword} | <i style="opacity: 0.8">${v.vnans}</i></div>` : ''}
+						<div style="font-size: 11px; margin-top: 4px; opacity: 0.6; font-style: italic;">${v.forms || ''}</div>
+						${v.ant && v.ant !== "-" ? `<div style="font-size: 11px; margin-top: 4px; color: #fbbf24;"><b>Gegenteil:</b> ${v.ant}</div>` : ''}
+						${v.giai_thich_dong_nghia ? `
+						<div style="font-size: 11px; margin-top: 6px; color: #e0f2fe; background: rgba(56, 189, 248, 0.1); padding: 8px; border-radius: 6px; border-left: 2px solid #38bdf8; line-height: 1.4;">
+							<b style="color: #38bdf8;">Synonyme:</b> ${v.dong_nghia_b1 || ''} / ${v.dong_nghia_b2 || ''}<br>
+							${!isNurDeutsch ? `<i style="opacity: 0.8;">${v.giai_thich_dong_nghia}</i>` : ''}
+						</div>` : ''}
+						<div style="font-size: 12px; margin-top: 8px; color: #94a3b8; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px;">
+							<p style="margin: 0 0 4px 0; color: #f8fafc;"><b>B1:</b> ${v.b1_ex || ''}</p>
+							${!isNurDeutsch ? `<p style="margin: 0 0 10px 0; opacity: 0.7; font-style: italic;">${v.vn_b1 || ''}</p>` : ''}
+							<p style="margin: 0 0 4px 0; color: #f8fafc;"><b>B2:</b> ${v.b2_ex || ''}</p>
+							${!isNurDeutsch ? `<p style="margin: 0; opacity: 0.7; font-style: italic;">${v.vn_b2 || ''}</p>` : ''}
+						</div>
+					</div>
+				</div>
+			`;
+		}).join('');
+	}
 
     function toggleVisible(st) { 
         const currentData = data.filter(v => v.level === currentLevel && isMatchGroup(v) && isMatchLek(v, currentLek)).filter(v => {
