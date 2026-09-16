@@ -34,15 +34,32 @@
     
     <style>
         :root {
-            --bg: #0b0f19; /* Tông Slate/Graphite tối cao cấp */
-            --glass: rgba(17, 24, 39, 0.65); /* Kính mờ đục vừa phải */
-            --primary: #818cf8; /* Xanh tím Indigo hiện đại, dịu mắt */
+            --bg: #0b0f19;
+            --glass: rgba(17, 24, 39, 0.65);
+            --primary: #818cf8;
             --success: #34d399;
             --danger: #f87171;
             --warning: #fbbf24;
             --warning-selected: #d97706; 
             --text: #f8fafc;
-            --border: rgba(255, 255, 255, 0.07); /* Viền mỏng tinh tế */
+            --border: rgba(255, 255, 255, 0.07);
+        }
+
+        /* Ép ẩn thanh cuộn ngang toàn trang và tính toán lại padding */
+        html, body {
+            overflow-x: hidden !important;
+            max-width: 100vw !important;
+            box-sizing: border-box !important;
+        }
+
+        /* Ẩn thanh cuộn ngang của riêng bảng nhập PIN và các bảng khác */
+        #pin-modal {
+            overflow-x: hidden !important;
+        }
+
+        /* Xóa hẳn hình ảnh thanh cuộn xám ngang của trình duyệt web/điện thoại */
+        ::-webkit-scrollbar:horizontal {
+            display: none !important;
         }
 
         body {
@@ -82,32 +99,25 @@
 
         @media (max-width: 600px) {
             body {
-                padding: 8px; /* Giảm lề viền màn hình */
+                padding: 8px;
             }
-
             .glass-card {
-                padding: 12px 14px; /* Thu gọn khoảng trống bên trong khung */
+                padding: 12px 14px;
                 margin-bottom: 10px;
-                border-radius: 16px; /* Bán kính bo góc nhỏ hơn cho màn hình nhỏ */
+                border-radius: 16px;
             }
-
-            /* Chuyển nhóm 4 nút thao tác thành 2 hàng 2 cột để chữ rộng rãi */
             .btn-group {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 6px;
             }
-
             .btn-action {
                 padding: 10px 6px;
                 font-size: 11.5px;
             }
-
-            /* Giảm kích thước font khung từ vựng chính để không bị đè dòng */
             .quiz-vn {
                 font-size: 19px;
                 margin: 6px 0 10px 0;
             }
-
             textarea#ans-input {
                 padding: 10px;
                 font-size: 16px;
@@ -128,33 +138,32 @@
             transition: min-height 0.3s ease;
         }
 
-        /* CSS MỚI CHO TOP BAR */
-		.top-bar {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			gap: 8px;
-			margin-bottom: 18px;
-			padding-bottom: 12px;
-			border-bottom: 1px solid var(--border);
-		}
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
 
-		.top-bar-actions {
-			display: grid;
-			grid-template-columns: auto auto auto;
-			gap: 8px;
-			align-items: center;
-		}
+        .top-bar-actions {
+            display: grid;
+            grid-template-columns: auto auto auto;
+            gap: 8px;
+            align-items: center;
+        }
 
-		@media (max-width: 600px) {
-			.top-bar {
-				flex-direction: column;
-				align-items: stretch;
-			}
-			.top-bar-actions {
-				grid-template-columns: 1fr 1fr;
-			}
-		}
+        @media (max-width: 600px) {
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .top-bar-actions {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
 
         .btn-guide-trigger {
             background: rgba(255, 255, 255, 0.05);
@@ -176,7 +185,6 @@
             color: #fff;
         }
 
-        /* Custom Dropdown UI */
         .custom-dropdown-container {
             position: relative;
             width: 100%;
@@ -355,7 +363,6 @@
         }
         .btn-main:active { opacity: 0.85; }
 
-        /* --- CẤU TRÚC ĐỒNG BỘ CHO NHÓM NÚT THAO TÁC (BTN-GROUP) --- */
         .btn-group { 
             display: grid; 
             grid-template-columns: repeat(4, 1fr); 
@@ -366,8 +373,8 @@
         .btn-action {
             border-radius: 10px;
             font-size: 12px;
-            font-weight: 600; /* Dày dặn vừa đủ, không bị đậm đen */
-            letter-spacing: 0.3px; /* Giúp nét chữ thoáng, dễ đọc */
+            font-weight: 600; 
+            letter-spacing: 0.3px; 
             padding: 9px 4px;
             cursor: pointer;
             text-align: center;
@@ -538,30 +545,43 @@
             padding: 10px 14px; background: rgba(255,255,255,0.03); border: 1px solid var(--border);
             border-radius: 10px; margin-bottom: 8px;
         }
+		
+		
+		
+		* {
+    box-sizing: border-box !important;
+}
+.modal-overlay, .modal-content {
+    overflow-x: hidden !important;
+}
+
+
+
     </style>
 </head>
 <body>
 
-<div id="yt-player-container" style="position: absolute; opacity: 0; pointer-events: none; width: 10px; height: 10px; overflow: hidden; z-index: -1;"></div>
+
+<div id="yt-player-container" style="position: absolute; top: 0; left: 0; opacity: 0; pointer-events: none; width: 1px; height: 1px; overflow: hidden; z-index: -9999;"></div>
 
 <div class="container">
     <div id="menu-screen">
         <div class="glass-card">
             
             <div class="top-bar">
-				<div class="top-bar-actions">
-					<div class="btn-guide-trigger" onclick="openGuide(true)">
-						<span>💡</span>
-						<div>
-							<span style="font-size: 10px; color: #fde047; font-weight: 800;">HƯỚNG DẪN</span><br>
-							<span style="font-size: 11px; color: #fde047; font-weight: 800;">Anweisen</span>
-						</div>
-					</div>
-					<div id="music-btn" class="btn-guide-trigger" onclick="toggleMusic()">🎵 Melodie Bachs</div>
-					<div id="cloud-sync-status" style="font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 10px; background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); text-align: center;">☁️ Mây kết nối</div>
-				</div>
-				<span id="lek-stats" style="font-size: 13px; font-weight: 700; color: var(--success); background: rgba(52, 211, 153, 0.1); padding: 6px 12px; border-radius: 12px; text-align: center;">0/0 🔥</span>
-			</div>
+                <div class="top-bar-actions">
+                    <div class="btn-guide-trigger" onclick="openGuide(true)">
+                        <span>💡</span>
+                        <div>
+                            <span style="font-size: 10px; color: #fde047; font-weight: 800;">HƯỚNG DẪN</span><br>
+                            <span style="font-size: 11px; color: #fde047; font-weight: 800;">Anweisen</span>
+                        </div>
+                    </div>
+                    <div id="music-btn" class="btn-guide-trigger" onclick="toggleMusic()">🎵 Melodie Bachs</div>
+                    <div id="cloud-sync-status" style="font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 10px; background: rgba(52, 211, 153, 0.15); color: #34d399; border: 1px solid rgba(52, 211, 153, 0.3); text-align: center;">☁️ Mây kết nối</div>
+                </div>
+                <span id="lek-stats" style="font-size: 13px; font-weight: 700; color: var(--success); background: rgba(52, 211, 153, 0.1); padding: 6px 12px; border-radius: 12px; text-align: center;">0/0 🔥</span>
+            </div>
 
             <h2>Vokabelübung</h2>
             
@@ -788,8 +808,6 @@
     </div>
 </div>
 
-
-
 <!-- MODAL XEM NHANH TỪ VỰNG TRONG TEXT ANALYSATOR -->
 <div id="quick-word-modal" class="modal-overlay hidden" onclick="closeQuickWordModal()">
     <div class="modal-content" style="max-width: 420px; padding: 20px; border-top: 4px solid var(--primary);" onclick="event.stopPropagation()">
@@ -829,7 +847,7 @@
 
                 <span class="lang-vi" style="color: #ffffff; font-weight: 600; line-height: 1.4; display: block; margin-bottom: 8px;">Lấy <b>5 từ sai nhiều nhất</b> trên <b>Heat-map</b> và viết thành <b>1 ngữ cảnh</b> – đây là cách học tốt nhất!</span>
                 <span class="lang-de" style="color: rgba(255,255,255,0.9); font-weight: 500; font-size: 13px; line-height: 1.4; display: block;"><i>(Die 5 häufigsten Fehlerwörter auf der Heatmap in einen Kontext setzen – das ist die beste Lernmethode!)</i></span>
-                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                
                 <div style="height: 1px; background: rgba(255,255,255,0.3); margin: 12px 0;"></div>
 
                 <span class="lang-de" style="color: rgba(255,255,255,0.95); font-weight: 800; font-size: 13px; margin-bottom: 4px; display: block;">📝 VÍ DỤ MINH HỌA (BEISPIEL):</span>
@@ -906,7 +924,6 @@
     </div>
 </div>
 
-
 <div id="pin-modal" class="modal-overlay hidden">
     <div class="modal-content flex-center-col" style="max-width: 340px; text-align: center; padding: 35px 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.9); border-top: 4px solid var(--primary);" onclick="event.stopPropagation()">
         <div style="font-size: 45px; margin-bottom: 12px; filter: drop-shadow(0 0 15px rgba(129, 140, 248, 0.4));">☁️</div>
@@ -919,11 +936,7 @@
     </div>
 </div>
 
-
-
-
 <script>
-
 function getMaxStreak(v) {
     if (!v) return 3;
     return (v.level && v.level.includes("B1")) ? 2 : 3;
@@ -107658,6 +107671,7 @@ function getMaxStreak(v) {
             btn.style.borderColor = '#ea580c';
         }
     }
+
 /* === HỆ THỐNG TỰ ĐỘNG LƯU & ĐỒNG BỘ CLOUD FIREBASE CHUẨN MỚI === */
 let cloudSaveTimeout = null;
 
@@ -107714,9 +107728,98 @@ async function forceImmediateSave() {
 document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') forceImmediateSave();
 });
-window.addEventListener('beforeunload', () => {
-    forceImmediateSave();
+
+// XỬ LÝ PHÍM ESC VÀ ENTER ĐƯỢC GỘP LẠI THÀNH DUY NHẤT 1 HÀM TẠI ĐÂY
+window.addEventListener('keydown', (e) => {
+    // 1. XỬ LÝ PHÍM ESC (Thoát/Đóng bảng)
+    if (e.key === 'Escape' || e.key === 'Esc') {
+        const alertModal = document.getElementById('custom-alert-modal');
+        const vocabModal = document.getElementById('vocab-table-modal');
+        const guideModal = document.getElementById('guide-modal');
+        const skippedModal = document.getElementById('skipped-modal');
+        const analyzerScreen = document.getElementById('analyzer-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const finishScreen = document.getElementById('finish-screen');
+        const pinModal = document.getElementById('pin-modal');
+
+        if (alertModal && !alertModal.classList.contains('hidden')) {
+            closeCustomAlert();
+        } else if (pinModal && !pinModal.classList.contains('hidden')) {
+            pinModal.classList.add('hidden');
+        } else if (vocabModal && !vocabModal.classList.contains('hidden')) {
+            closeVocabTable();
+        } else if (guideModal && !guideModal.classList.contains('hidden')) {
+            closeGuide();
+        } else if (skippedModal && !skippedModal.classList.contains('hidden')) {
+            closeSkippedModal();
+        } else if (analyzerScreen && !analyzerScreen.classList.contains('hidden')) {
+            closeAnalyzer();
+        } else if (quizScreen && !quizScreen.classList.contains('hidden')) {
+            backToMenu();
+        } else if (finishScreen && !finishScreen.classList.contains('hidden')) {
+            backToMenu();
+        }
+        return; 
+    }
+
+    // 2. XỬ LÝ PHÍM ENTER
+    if (e.key === 'Enter') {
+        e.preventDefault(); 
+        
+        // --- CHẶN Ở BẢNG PIN TRƯỚC TIÊN ---
+        const pinModal = document.getElementById('pin-modal');
+        if (pinModal && !pinModal.classList.contains('hidden')) {
+            submitCloudPin(); // Chỉ kết nối mây
+            return; // Dừng luôn, không chạy xuống code bên dưới nữa
+        }
+
+        const alertModal = document.getElementById('custom-alert-modal');
+        if (alertModal && !alertModal.classList.contains('hidden')) {
+            closeCustomAlert();
+            return;
+        }
+
+        // --- CHẶN KHI ĐANG MỞ CÁC BẢNG HƯỚNG DẪN/TỪ VỰNG ---
+        const vocabModal = document.getElementById('vocab-table-modal');
+        const guideModal = document.getElementById('guide-modal');
+        const skippedModal = document.getElementById('skipped-modal');
+        const analyzerScreen = document.getElementById('analyzer-screen');
+        
+        if ((vocabModal && !vocabModal.classList.contains('hidden')) || 
+            (guideModal && !guideModal.classList.contains('hidden')) ||
+            (skippedModal && !skippedModal.classList.contains('hidden')) ||
+            (analyzerScreen && !analyzerScreen.classList.contains('hidden'))) {
+            return; 
+        }
+
+        if (isTransitioning) return; 
+
+        const menuScreen = document.getElementById('menu-screen');
+        const finishScreen = document.getElementById('finish-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const input = document.getElementById('ans-input');
+
+        // --- CHỈ CHO VÀO HỌC KHI ĐANG Ở MENU HOẶC MÀN HÌNH KẾT THÚC ---
+        if (!menuScreen.classList.contains('hidden')) { restartLastSession(); return; }
+        if (!finishScreen.classList.contains('hidden')) { restartLastSession(); return; }
+        
+        // --- XỬ LÝ ENTER KHI ĐANG TRẢ LỜI CÂU HỎI TRONG BÀI HỌC ---
+        if (!quizScreen.classList.contains('hidden')) {
+            if (isOfferingLifeline) {
+                processCheck(); 
+                return;
+            }
+
+            if (typeof isWaitingForNext !== 'undefined' && isWaitingForNext) {
+                isWaitingForNext = false;
+                if (currentStep === 1) { currentStep = 2; } else { currentStep = 1; idx++; }
+                showWord(); return;
+            }
+            if (input && input.value.trim() !== "") { processCheck(); }
+        }
+    }
 });
+
 // Vẫn giữ cơ chế lưu dự phòng 30s
 setInterval(() => {
     if (userPin && window.db) forceImmediateSave();
@@ -107742,10 +107845,8 @@ async function checkUserPinAndSync() {
                 try { cloudData = JSON.parse(data.mastery_json); } catch(e){}
 
                 if (cloudData && typeof cloudData === 'object') {
-                    // XÓA BỎ LOGIC GỘP PHỨC TẠP - LẤY CLOUD LÀM CHUẨN TUYỆT ĐỐI
                     mastery = cloudData;
                     
-                    // Cập nhật lại những từ vựng mới thêm vào file HTML nhưng chưa có trên Cloud
                     window.data.forEach(v => { 
                         if (mastery[v.word] === undefined) mastery[v.word] = { s: 0, w: 0, a: true, saved: false, skipped: false }; 
                     });
@@ -107766,7 +107867,7 @@ async function checkUserPinAndSync() {
     }
 }
 
-// 3. Hàm xử lý nút "Kết nối đám mây" trong bảng UI mới
+// 3. Hàm xử lý nút "Kết nối đám mây"
 function submitCloudPin() {
     const input = document.getElementById('pin-input-field').value.trim();
     if (input !== "") {
@@ -107779,7 +107880,7 @@ function submitCloudPin() {
     }
 }
 
-// 4. Hàm xử lý Đổi Mã PIN cũng dùng bảng UI mới thay cho prompt
+// 4. Hàm xử lý Đổi Mã PIN
 function changeUserPin() {
     document.getElementById('pin-input-field').value = userPin;
     document.getElementById('pin-modal').classList.remove('hidden');
@@ -108290,9 +108391,7 @@ function openSavedVocabTable() {
     loadVoices().then(voices => console.log("Voices loaded successfully!"));
 
     // HÀM CHUẨN HÓA DỮ LIỆU ĐẦU VÀO (GỘP TOÀN BỘ VIẾT TẮT)
-	
-	
-	function normalizeGerman(text) {
+    function normalizeGerman(text) {
     if (!text) return "";
 
     const map = {
@@ -108323,8 +108422,8 @@ function openSavedVocabTable() {
     return cleaned.split(' ').map(word => map[word] || word).join(' ')
         .replace(/\b(jemandem|jemanden|jemand)\s+(etwas)\b/g, "$2 $1");
 }
-	
-	
+    
+    
 // 1. Hàm tự động thêm Umlaut cho nguyên âm cuối (a->ä, o->ö, u->ü, au->äu)
 function applyUmlaut(word) {
     if (!word) return word;
@@ -108350,7 +108449,7 @@ function formatGermanForSpeech(text) {
                  .replace(/\bSg\.\b/gi, "Singular")
                  .replace(/\bPl\.\b/gi, "Plural");
 
-    // Xử lý đọc danh từ + số nhiều (Hỗ trợ dạng: "Ticket, -s", "Ticket, s", "Buch, "-er", "Buch, "er")
+    // Xử lý đọc danh từ + số nhiều
     clean = clean.replace(/\b([A-ZÄÖÜa-zäöüß]+),\s*("-|-|")?\s*([a-zäöüß]+)\b/g, (fullMatch, word, symbol, ending) => {
         if (!symbol && !ending) return fullMatch;
 
@@ -108366,7 +108465,6 @@ function formatGermanForSpeech(text) {
 
     return clean;
 }
-
 
 // 3. Hàm phát âm đã tích hợp bộ đọc danh từ thông minh
 function speakGerman(text) {
@@ -109110,117 +109208,52 @@ function speakGerman(text) {
     }
 }
 
-    window.addEventListener('keydown', (e) => {
-    // XỬ LÝ PHÍM ESC (Thoát/Đóng)
-    if (e.key === 'Escape' || e.key === 'Esc') {
-        const alertModal = document.getElementById('custom-alert-modal');
-        const vocabModal = document.getElementById('vocab-table-modal');
-        const guideModal = document.getElementById('guide-modal');
-        const skippedModal = document.getElementById('skipped-modal');
-        const analyzerScreen = document.getElementById('analyzer-screen');
-        const quizScreen = document.getElementById('quiz-screen');
-        const finishScreen = document.getElementById('finish-screen');
-
-        if (alertModal && !alertModal.classList.contains('hidden')) {
-            closeCustomAlert();
-        } else if (vocabModal && !vocabModal.classList.contains('hidden')) {
-            closeVocabTable();
-        } else if (guideModal && !guideModal.classList.contains('hidden')) {
-            closeGuide();
-        } else if (skippedModal && !skippedModal.classList.contains('hidden')) {
-            closeSkippedModal();
-        } else if (analyzerScreen && !analyzerScreen.classList.contains('hidden')) {
-            closeAnalyzer();
-        } else if (quizScreen && !quizScreen.classList.contains('hidden')) {
-            backToMenu();
-        } else if (finishScreen && !finishScreen.classList.contains('hidden')) {
-            backToMenu();
-        }
-        return; 
-    }
-
-    // XỬ LÝ PHÍM ENTER (Nộp bài/Tiếp tục)
-    if (e.key === 'Enter') {
-        e.preventDefault(); 
-        const alertModal = document.getElementById('custom-alert-modal');
-        if (alertModal && !alertModal.classList.contains('hidden')) {
-            closeCustomAlert();
+    function renderHeat() {
+        const cloud = document.getElementById('heat-cloud');
+        
+        const fails = data.filter(v => (mastery[v.word]?.w || 0) > 0)
+                          .sort((a,b) => (mastery[b.word]?.w || 0) - (mastery[a.word]?.w || 0));
+        
+        if (fails.length === 0) {
+            cloud.innerHTML = `<p style="text-align:center; font-size:12px; opacity:0.4">Chưa có dữ liệu heatmap.</p>`; 
             return;
         }
 
-        if (isTransitioning) return; 
-
-        const menuScreen = document.getElementById('menu-screen');
-        const finishScreen = document.getElementById('finish-screen');
-        const quizScreen = document.getElementById('quiz-screen');
-        const input = document.getElementById('ans-input');
-
-        if (!menuScreen.classList.contains('hidden')) { restartLastSession(); return; }
-        if (!finishScreen.classList.contains('hidden')) { restartLastSession(); return; }
-        
-        if (!quizScreen.classList.contains('hidden')) {
-            if (isOfferingLifeline) {
-                processCheck(); 
-                return;
-            }
-
-            if (typeof isWaitingForNext !== 'undefined' && isWaitingForNext) {
-                isWaitingForNext = false;
-                if (currentStep === 1) { currentStep = 2; } else { currentStep = 1; idx++; }
-                showWord(); return;
-            }
-            if (input && input.value.trim() !== "") { processCheck(); }
-        }
-        }
-    });
-
-    function renderHeat() {
-		const cloud = document.getElementById('heat-cloud');
-		
-		// Đã bỏ lọc theo currentLevel & isMatchGroup để hiện toàn bộ từ sai trên hệ thống
-		const fails = data.filter(v => (mastery[v.word]?.w || 0) > 0)
-						  .sort((a,b) => (mastery[b.word]?.w || 0) - (mastery[a.word]?.w || 0));
-		
-		if (fails.length === 0) {
-			cloud.innerHTML = `<p style="text-align:center; font-size:12px; opacity:0.4">Chưa có dữ liệu heatmap.</p>`; 
-			return;
-		}
-
-		cloud.innerHTML = fails.map((v, index) => {
-			const failCount = mastery[v.word]?.w || 0;
-			const fontSize = Math.min(13 + failCount * 2, 22); 
-			const opacity = Math.min(0.3 + failCount * 0.15, 1);
-			return `
-				<div class="heat-item" style="border-left: 4px solid rgba(248, 113, 113, ${opacity}); background: rgba(248, 113, 113, 0.05); padding: 12px; margin-bottom: 10px; border-radius: 12px; flex-direction: column; align-items: stretch;">
-					<div style="display:flex; justify-content:space-between; align-items: center; width: 100%;">
-						<div>
-							<b style="font-size: ${fontSize}px; color: var(--danger)">${v.word}</b>
-							<span style="font-size: 11px; font-weight: bold; color: var(--danger); background: rgba(248, 113, 113, 0.2); padding: 2px 6px; border-radius: 4px; margin-left: 8px;">Fehler: ${failCount}</span>
-							<span style="font-size: 10px; color: #94a3b8; margin-left: 4px;">(${v.level || ''})</span>
-						</div>
-						<button id="heat-btn-${index}" onclick="toggleHeatDetail(${index})" style="background: none; border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; padding: 4px 12px; font-size: 16px; font-weight: bold;">+</button>
-					</div>
-					<div style="font-size: 13px; color: var(--primary); font-weight: 600; margin-top: 5px;">Struktur: ${v.ans}</div>
-					<div id="heat-detail-${index}" class="hidden" style="margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px;">
-						${!isNurDeutsch ? `<div style="font-size: 12px; color: #cbd5e1;"><b>Nghĩa:</b> ${v.vnword} | <i style="opacity: 0.8">${v.vnans}</i></div>` : ''}
-						<div style="font-size: 11px; margin-top: 4px; opacity: 0.6; font-style: italic;">${v.forms || ''}</div>
-						${v.ant && v.ant !== "-" ? `<div style="font-size: 11px; margin-top: 4px; color: #fbbf24;"><b>Gegenteil:</b> ${v.ant}</div>` : ''}
-						${v.giai_thich_dong_nghia ? `
-						<div style="font-size: 11px; margin-top: 6px; color: #e0f2fe; background: rgba(56, 189, 248, 0.1); padding: 8px; border-radius: 6px; border-left: 2px solid #38bdf8; line-height: 1.4;">
-							<b style="color: #38bdf8;">Synonyme:</b> ${v.dong_nghia_b1 || ''} / ${v.dong_nghia_b2 || ''}<br>
-							${!isNurDeutsch ? `<i style="opacity: 0.8;">${v.giai_thich_dong_nghia}</i>` : ''}
-						</div>` : ''}
-						<div style="font-size: 12px; margin-top: 8px; color: #94a3b8; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px;">
-							<p style="margin: 0 0 4px 0; color: #f8fafc;"><b>B1:</b> ${v.b1_ex || ''}</p>
-							${!isNurDeutsch ? `<p style="margin: 0 0 10px 0; opacity: 0.7; font-style: italic;">${v.vn_b1 || ''}</p>` : ''}
-							<p style="margin: 0 0 4px 0; color: #f8fafc;"><b>B2:</b> ${v.b2_ex || ''}</p>
-							${!isNurDeutsch ? `<p style="margin: 0; opacity: 0.7; font-style: italic;">${v.vn_b2 || ''}</p>` : ''}
-						</div>
-					</div>
-				</div>
-			`;
-		}).join('');
-	}
+        cloud.innerHTML = fails.map((v, index) => {
+            const failCount = mastery[v.word]?.w || 0;
+            const fontSize = Math.min(13 + failCount * 2, 22); 
+            const opacity = Math.min(0.3 + failCount * 0.15, 1);
+            return `
+                <div class="heat-item" style="border-left: 4px solid rgba(248, 113, 113, ${opacity}); background: rgba(248, 113, 113, 0.05); padding: 12px; margin-bottom: 10px; border-radius: 12px; flex-direction: column; align-items: stretch;">
+                    <div style="display:flex; justify-content:space-between; align-items: center; width: 100%;">
+                        <div>
+                            <b style="font-size: ${fontSize}px; color: var(--danger)">${v.word}</b>
+                            <span style="font-size: 11px; font-weight: bold; color: var(--danger); background: rgba(248, 113, 113, 0.2); padding: 2px 6px; border-radius: 4px; margin-left: 8px;">Fehler: ${failCount}</span>
+                            <span style="font-size: 10px; color: #94a3b8; margin-left: 4px;">(${v.level || ''})</span>
+                        </div>
+                        <button id="heat-btn-${index}" onclick="toggleHeatDetail(${index})" style="background: none; border: 1px solid var(--border); color: var(--text); border-radius: 6px; cursor: pointer; padding: 4px 12px; font-size: 16px; font-weight: bold;">+</button>
+                    </div>
+                    <div style="font-size: 13px; color: var(--primary); font-weight: 600; margin-top: 5px;">Struktur: ${v.ans}</div>
+                    <div id="heat-detail-${index}" class="hidden" style="margin-top: 10px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 10px;">
+                        ${!isNurDeutsch ? `<div style="font-size: 12px; color: #cbd5e1;"><b>Nghĩa:</b> ${v.vnword} | <i style="opacity: 0.8">${v.vnans}</i></div>` : ''}
+                        <div style="font-size: 11px; margin-top: 4px; opacity: 0.6; font-style: italic;">${v.forms || ''}</div>
+                        ${v.ant && v.ant !== "-" ? `<div style="font-size: 11px; margin-top: 4px; color: #fbbf24;"><b>Gegenteil:</b> ${v.ant}</div>` : ''}
+                        ${v.giai_thich_dong_nghia ? `
+                        <div style="font-size: 11px; margin-top: 6px; color: #e0f2fe; background: rgba(56, 189, 248, 0.1); padding: 8px; border-radius: 6px; border-left: 2px solid #38bdf8; line-height: 1.4;">
+                            <b style="color: #38bdf8;">Synonyme:</b> ${v.dong_nghia_b1 || ''} / ${v.dong_nghia_b2 || ''}<br>
+                            ${!isNurDeutsch ? `<i style="opacity: 0.8;">${v.giai_thich_dong_nghia}</i>` : ''}
+                        </div>` : ''}
+                        <div style="font-size: 12px; margin-top: 8px; color: #94a3b8; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 8px;">
+                            <p style="margin: 0 0 4px 0; color: #f8fafc;"><b>B1:</b> ${v.b1_ex || ''}</p>
+                            ${!isNurDeutsch ? `<p style="margin: 0 0 10px 0; opacity: 0.7; font-style: italic;">${v.vn_b1 || ''}</p>` : ''}
+                            <p style="margin: 0 0 4px 0; color: #f8fafc;"><b>B2:</b> ${v.b2_ex || ''}</p>
+                            ${!isNurDeutsch ? `<p style="margin: 0; opacity: 0.7; font-style: italic;">${v.vn_b2 || ''}</p>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
 
     function toggleVisible(st) { 
         const currentData = data.filter(v => v.level === currentLevel && isMatchGroup(v) && isMatchLek(v, currentLek)).filter(v => {
@@ -109603,7 +109636,6 @@ function analyzeText() {
             
             let wordEscaped = ut.matchItem.word.replace(/'/g, "\\'");
             
-            // Ép kiểu inline-flex để nút loa và chữ luôn nằm ngang trên cùng 1 dòng
             return `<span class="${badgeClass}" style="display: inline-flex !important; align-items: center !important; gap: 3px !important; width: auto !important; height: auto !important; min-height: 0 !important; padding: 2px 6px !important; margin: 0 2px !important; border-radius: 6px !important; cursor: pointer !important; vertical-align: baseline !important; flex-direction: row !important;" onclick="showQuickWordModal('${wordEscaped}')" title="Nhấp xem chi tiết">
                 <span style="display: inline !important; font-size: inherit !important; line-height: inherit !important;">${ut.original}</span>
                 <span onclick="event.stopPropagation(); speakGerman('${wordEscaped}')" style="display: inline-block !important; font-size: 12px !important; cursor: pointer !important; line-height: 1 !important; opacity: 0.85;" title="Nghe từ vựng">🔊</span>
@@ -109700,10 +109732,6 @@ function showCustomAlert(message, title = "Thông báo", icon = "🔔") {
 function closeCustomAlert() {
     document.getElementById('custom-alert-modal').classList.add('hidden');
 }
-
-
-
-
 
 init(); 
 </script>
