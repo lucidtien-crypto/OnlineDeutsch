@@ -906,6 +906,22 @@
     </div>
 </div>
 
+
+<div id="pin-modal" class="modal-overlay hidden">
+    <div class="modal-content flex-center-col" style="max-width: 340px; text-align: center; padding: 35px 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.9); border-top: 4px solid var(--primary);" onclick="event.stopPropagation()">
+        <div style="font-size: 45px; margin-bottom: 12px; filter: drop-shadow(0 0 15px rgba(129, 140, 248, 0.4));">☁️</div>
+        <h3 style="color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 8px; border: none; padding: 0; justify-content: center; width: 100%;">Mã học phần</h3>
+        <p style="color: #94a3b8; font-size: 13.5px; line-height: 1.5; margin-bottom: 25px;">Nhập mã lưu trữ để đồng bộ và bảo vệ tiến độ học của bạn trên đám mây.</p>
+        
+        <input type="text" id="pin-input-field" placeholder="Ví dụ: 1009" style="width: 100%; padding: 14px; border-radius: 14px; border: 2px solid rgba(129, 140, 248, 0.5); background: rgba(0,0,0,0.3); color: white; font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 20px; outline: none; transition: all 0.3s;" onfocus="this.style.borderColor='var(--primary)'; this.style.boxShadow='0 0 15px rgba(129, 140, 248, 0.3)'" onblur="this.style.borderColor='rgba(129, 140, 248, 0.5)'; this.style.boxShadow='none'">
+        
+        <button class="btn-main" style="padding: 14px; font-size: 15px; border-radius: 12px;" onclick="submitCloudPin()">Kết nối Đám mây</button>
+    </div>
+</div>
+
+
+
+
 <script>
 
 function getMaxStreak(v) {
@@ -107642,85 +107658,76 @@ function getMaxStreak(v) {
             btn.style.borderColor = '#ea580c';
         }
     }
+/* === HỆ THỐNG TỰ ĐỘNG LƯU & ĐỒNG BỘ CLOUD FIREBASE CHUẨN MỚI === */
+let cloudSaveTimeout = null;
 
-    /* === HỆ THỐNG TỰ ĐỘNG LƯU & ĐỒNG BỘ CLOUD FIREBASE === */
-		let cloudSaveTimeout = null;
+function updateSyncStatusUI(statusText, isSaving = false) {
+    const badge = document.getElementById('cloud-sync-status');
+    if (!badge) return;
+    if (isSaving) {
+        badge.style.background = "rgba(251, 191, 36, 0.15)";
+        badge.style.color = "#fbbf24";
+        badge.style.borderColor = "rgba(251, 191, 36, 0.3)";
+        badge.innerHTML = `⏳ ${statusText}`;
+    } else {
+        badge.style.background = "rgba(52, 211, 153, 0.15)";
+        badge.style.color = "#34d399";
+        badge.style.borderColor = "rgba(52, 211, 153, 0.3)";
+        badge.innerHTML = `☁️ ${statusText}`;
+    }
+}
 
-		function updateSyncStatusUI(statusText, isSaving = false) {
-			const badge = document.getElementById('cloud-sync-status');
-			if (!badge) return;
-			if (isSaving) {
-				badge.style.background = "rgba(251, 191, 36, 0.15)";
-				badge.style.color = "#fbbf24";
-				badge.style.borderColor = "rgba(251, 191, 36, 0.3)";
-				badge.innerHTML = `⏳ ${statusText}`;
-			} else {
-				badge.style.background = "rgba(52, 211, 153, 0.15)";
-				badge.style.color = "#34d399";
-				badge.style.borderColor = "rgba(52, 211, 153, 0.3)";
-				badge.innerHTML = `☁️ ${statusText}`;
-			}
-		}
-
-		// Hàm lưu tự động chính (Auto-save)
-		function save() { 
+// Hàm lưu cục bộ & kích hoạt lưu mây
+function save() { 
     localStorage.setItem('b2_pro_v1', JSON.stringify(mastery)); 
     renderList(); 
 
     if (userPin && window.db) {
         updateSyncStatusUI("Đang chờ lưu...", true);
         clearTimeout(cloudSaveTimeout);
-        
         cloudSaveTimeout = setTimeout(async () => {
             await forceImmediateSave();
-        }, 500); // Đã giảm từ 1500 xuống 500ms
+        }, 500); 
     }
 }
 
-		// 1. Hàm đẩy dữ liệu tức thì lên Mây (Đã mã hóa an toàn tránh lỗi dấu chấm/ký tự đặc biệt)
-		async function forceImmediateSave() {
-			localStorage.setItem('b2_pro_v1', JSON.stringify(mastery));
-			if (userPin && window.db) {
-				try {
-					updateSyncStatusUI("Đang lưu mây...", true);
-					const userDocRef = window.doc(window.db, "user_progress", userPin);
-					await window.setDoc(userDocRef, {
-						mastery_json: JSON.stringify(mastery),
-						lastUpdated: new Date().toISOString()
-					}, { merge: true });
-					updateSyncStatusUI("Mây đã đồng bộ");
-				} catch (err) {
-					console.error("Lỗi đồng bộ Mây:", err);
-					updateSyncStatusUI("Lỗi mây (Lưu local)");
-				}
-			}
-		}
+// 1. Đẩy thẳng dữ liệu lên mây
+async function forceImmediateSave() {
+    localStorage.setItem('b2_pro_v1', JSON.stringify(mastery));
+    if (userPin && window.db) {
+        try {
+            updateSyncStatusUI("Đang lưu mây...", true);
+            const userDocRef = window.doc(window.db, "user_progress", userPin);
+            await window.setDoc(userDocRef, {
+                mastery_json: JSON.stringify(mastery),
+                lastUpdated: new Date().toISOString()
+            }, { merge: true });
+            updateSyncStatusUI("Mây đã đồng bộ");
+        } catch (err) {
+            console.error("Lỗi đồng bộ Mây:", err);
+            updateSyncStatusUI("Lỗi mây (Lưu local)");
+        }
+    }
+}
 
-		// Tự động lưu khi ẩn trình duyệt hoặc chuyển sang ứng dụng khác
-		document.addEventListener('visibilitychange', () => {
-			if (document.visibilityState === 'hidden') {
-				forceImmediateSave();
-			}
-		});
+// Tự động lưu tức thì khi thoát ra ngoài, ẩn tab, tắt app
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') forceImmediateSave();
+});
+window.addEventListener('beforeunload', () => {
+    forceImmediateSave();
+});
+// Vẫn giữ cơ chế lưu dự phòng 30s
+setInterval(() => {
+    if (userPin && window.db) forceImmediateSave();
+}, 30000);
 
-		// Tự động lưu trước khi đóng tab/trình duyệt
-		window.addEventListener('beforeunload', () => {
-			forceImmediateSave();
-		});
-
-		// Tự động lưu định kỳ mỗi 30 giây (Chạy ngầm)
-		setInterval(() => {
-			if (userPin && window.db) {
-				forceImmediateSave();
-			}
-		}, 30000);
-
-   // 2. Hàm tải và gộp dữ liệu thông minh từ Mây về máy
-		async function checkUserPinAndSync() {
+// 2. Kích hoạt hỏi mã PIN & Tải Mây (Cloud là Chân Lý)
+async function checkUserPinAndSync() {
     if (!userPin) {
-        userPin = prompt("Nhập Mã PIN cá nhân của bạn (để đồng bộ tiến độ trên mây giữa các thiết bị):", "1009");
-        if (!userPin) userPin = "default_user";
-        localStorage.setItem('b2_user_pin', userPin);
+        document.getElementById('pin-modal').classList.remove('hidden');
+        setTimeout(() => document.getElementById('pin-input-field').focus(), 100);
+        return;
     }
 
     if (window.db) {
@@ -107732,34 +107739,18 @@ function getMaxStreak(v) {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 let cloudData = null;
-
-                if (data.mastery_json) {
-                    try { cloudData = JSON.parse(data.mastery_json); } catch(e){}
-                } else if (data.mastery && typeof data.mastery === 'object') {
-                    cloudData = data.mastery;
-                }
+                try { cloudData = JSON.parse(data.mastery_json); } catch(e){}
 
                 if (cloudData && typeof cloudData === 'object') {
-                    // Gộp thông minh: Luôn bảo toàn Streak (s) và Lỗi (w) cao nhất giữa Máy & Mây
-                    Object.keys(cloudData).forEach(key => {
-                        if (!mastery[key]) {
-                            mastery[key] = { s: 0, w: 0, a: true };
-                        }
-                        // Dùng Math.max để không bị đè bởi bản ghi cũ trên Cloud
-                        mastery[key].s = Math.max(mastery[key].s || 0, cloudData[key].s || 0);
-                        mastery[key].w = Math.max(mastery[key].w || 0, cloudData[key].w || 0);
-                        
-                        mastery[key].a = cloudData[key].a ?? mastery[key].a;
-                        mastery[key].saved = mastery[key].saved || cloudData[key].saved || false;
-                        mastery[key].skipped = mastery[key].skipped || cloudData[key].skipped || false;
+                    // XÓA BỎ LOGIC GỘP PHỨC TẠP - LẤY CLOUD LÀM CHUẨN TUYỆT ĐỐI
+                    mastery = cloudData;
+                    
+                    // Cập nhật lại những từ vựng mới thêm vào file HTML nhưng chưa có trên Cloud
+                    window.data.forEach(v => { 
+                        if (mastery[v.word] === undefined) mastery[v.word] = { s: 0, w: 0, a: true, saved: false, skipped: false }; 
                     });
-                    
-                    // Lưu lại bản gộp cao nhất vào máy
+
                     localStorage.setItem('b2_pro_v1', JSON.stringify(mastery));
-                    
-                    // Cập nhật ngược lại lên Mây để đồng bộ bản mới nhất
-                    await forceImmediateSave();
-                    
                     updateSyncStatusUI("Mây đã đồng bộ");
                     renderList();
                     renderHeat();
@@ -107770,23 +107761,34 @@ function getMaxStreak(v) {
             }
         } catch (err) {
             console.error("Lỗi lấy dữ liệu từ Cloud:", err);
-            updateSyncStatusUI("Lỗi mây (Lưu local)");
+            updateSyncStatusUI("Lỗi mây (Dùng local)");
         }
     }
 }
 
-    function changeUserPin() {
-        const newPin = prompt("Nhập Mã PIN cá nhân mới:", userPin);
-        if (newPin && newPin.trim() !== "") {
-            userPin = newPin.trim();
-            localStorage.setItem('b2_user_pin', userPin);
-            checkUserPinAndSync();
-        }
-    }
-
-    function forceSyncFromCloud() {
+// 3. Hàm xử lý nút "Kết nối đám mây" trong bảng UI mới
+function submitCloudPin() {
+    const input = document.getElementById('pin-input-field').value.trim();
+    if (input !== "") {
+        userPin = input;
+        localStorage.setItem('b2_user_pin', userPin);
+        document.getElementById('pin-modal').classList.add('hidden');
         checkUserPinAndSync();
+    } else {
+        alert("Vui lòng nhập mã học phần!");
     }
+}
+
+// 4. Hàm xử lý Đổi Mã PIN cũng dùng bảng UI mới thay cho prompt
+function changeUserPin() {
+    document.getElementById('pin-input-field').value = userPin;
+    document.getElementById('pin-modal').classList.remove('hidden');
+    setTimeout(() => document.getElementById('pin-input-field').focus(), 100);
+}
+
+function forceSyncFromCloud() {
+    checkUserPinAndSync();
+}
 
     function checkGroupMatch(v, grpId) {
         if (grpId === 'all') return true;
@@ -109698,6 +109700,10 @@ function showCustomAlert(message, title = "Thông báo", icon = "🔔") {
 function closeCustomAlert() {
     document.getElementById('custom-alert-modal').classList.add('hidden');
 }
+
+
+
+
 
 init(); 
 </script>
