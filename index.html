@@ -148548,7 +148548,6 @@ function startSpeechPractice() {
     const inputField = document.getElementById('ans-input');
     if (!inputField) return;
 
-    // Màu xanh ngọc dịu nhẹ đồng bộ giao diện
     const activeColor = "#10b981"; 
     const defaultColor = "var(--border)";
 
@@ -148568,34 +148567,34 @@ function startSpeechPractice() {
 
     recognition.lang = 'de-DE';
     recognition.interimResults = true;
-    
-    // Đã thay đổi: Trên điện thoại nên để continuous = false đối với các cụm từ ngắn
-    // để tránh bị lặp vòng lặp API của Google, nhưng nếu bạn muốn đọc câu dài thì giữ true.
-    // Ở đây giữ true và sửa logic đọc mảng để chống lặp chữ.
     recognition.continuous = true; 
     recognition.maxAlternatives = 1;
 
-    inputField.value = ""; // Xóa trắng ô input ngay khi bắt đầu
+    inputField.value = ""; 
     inputField.placeholder = "🎙️ Đang nghe... (Bấm Sprechen để dừng)";
     inputField.style.borderColor = activeColor; 
 
-    // CHỈNH SỬA CHÍNH NẰM Ở ĐÂY
+    // --- THUẬT TOÁN CHỐNG BỘ ĐỆM LẶP CHỮ TRÊN MOBILE ---
     recognition.onresult = (event) => {
-        let finalTranscript = '';
-        let interimTranscript = '';
+        let fullSentence = '';
 
-        // Thay vì push vào mảng, ta duyệt trực tiếp từ i = 0 để lấy câu hoàn chỉnh nhất
-        for (let i = 0; i < event.results.length; ++i) {
-            if (event.results[i].isFinal) {
-                finalTranscript += event.results[i][0].transcript + ' ';
-            } else {
-                interimTranscript += event.results[i][0].transcript;
+        for (let i = 0; i < event.results.length; i++) {
+            let currentChunk = event.results[i][0].transcript.trim();
+
+            if (!currentChunk) continue;
+
+            // Nếu câu mới đã bao hàm câu cũ (đặc trưng lặp bộ đệm trên Mobile) -> Ghi đè câu mới
+            if (currentChunk.length > fullSentence.length && currentChunk.toLowerCase().startsWith(fullSentence.toLowerCase())) {
+                fullSentence = currentChunk;
+            } 
+            // Nếu là phân đoạn từ mới tách biệt (đặc trưng trên Desktop) -> Nối vào sau
+            else if (!fullSentence.toLowerCase().includes(currentChunk.toLowerCase())) {
+                fullSentence += (fullSentence ? ' ' : '') + currentChunk;
             }
         }
 
-        // Gộp chuỗi hoàn chỉnh và chuỗi tạm thời, loại bỏ khoảng trắng thừa
-        const fullSpokenText = (finalTranscript + interimTranscript).replace(/\s+/g, ' ').trim();
-        inputField.value = fullSpokenText;
+        // Cập nhật câu hoàn chỉnh nhất lên ô nhập liệu
+        inputField.value = fullSentence.replace(/\s+/g, ' ').trim();
     };
 
     recognition.onerror = (event) => {
